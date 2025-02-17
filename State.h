@@ -12,7 +12,7 @@ public:
     char board[6][6]{};
     char player;
     bool isFinished;
-    State makeMove(const int y, const int x, char player);
+    State makeMove(int y,  int x, char player);
     State() {
         std::memset(board, 0, sizeof(board));
         player = 1;
@@ -22,11 +22,13 @@ public:
         std::memcpy(board, brd, sizeof(board));
         board[x][y] = player;
         this->player = (player == 1) ? 2 : 1;
-        isFinished = checkIfFinished(board);
+        isFinished = checkIfFinished();
     }
-    char checkIfFinished(char board[6][6]);
+    char checkIfFinished();
     char checkColumn(int x);
     char checkRow(int y);
+    char checkAcrossLeft(int y_beg, int y_end, int x);
+    char checkAcrossRight(int y_beg, int y_end, int x);
 };
 
 

@@ -25,11 +25,13 @@ endif()
 # Our Project
 
 add_executable(${PROJECT_NAME}
-        Game.cpp
+        GameApi.cpp
         State.cpp
-        Game.h
+        GameApi.h
         State.h
-        main.cpp)
+        main.cpp
+        GameUI.cpp
+        GameUI.h)
 #set(raylib_VERBOSE 1)
 target_link_libraries(${PROJECT_NAME} raylib)
 

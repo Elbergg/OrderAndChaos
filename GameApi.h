@@ -7,10 +7,10 @@
 
 
 
-class Game {
+class GameApi {
 public:
     State state;
-    Game() {
+    GameApi() {
         state = State();
     }
     void makeMove(int y, int x, char player);
