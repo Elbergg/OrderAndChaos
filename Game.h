@@ -13,7 +13,7 @@ public:
     Game() {
         state = State();
     }
-    void makeMove(int x, int y, char player);
+    void makeMove(int y, int x, char player);
 };
 
 

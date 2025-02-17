@@ -4,7 +4,7 @@
 
 #include "Game.h"
 
-void Game::makeMove(int x, int y, char player)
+void Game::makeMove(int y, int x, char player)
 {
-   state = state.makeMove(x,y,player);
+   state = state.makeMove(y,x,player);
 }
