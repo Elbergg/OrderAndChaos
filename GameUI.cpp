@@ -19,11 +19,32 @@ void GameUI::RunGame(GameApi* api) {
         windowWidth = GetScreenWidth();
         windowHeight = GetScreenHeight();
         this->drawGrids();
+        checkForClicks();
         this->drawTiles(api->state.board);
         EndDrawing();
     }
     CloseWindow();
 }
+
+void GameUI::checkForClicks() {
+    int player;
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        player=1;
+    }
+    else if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
+        player=2;
+    }
+    if (GetMouseX()!= 0 && GetMouseY()!= 0) {
+        int x = windowWidth/GetMouseX()/6;
+        int y = windowHeight/GetMouseY()/6;
+        if (player == 1 && x > 0 && y > 0)
+            drawX(y,x);
+        else if (player == 2 && x > 0 && y > 0)
+            drawO(y,x);
+    }
+
+}
+
 
 void GameUI::drawGrids() {
     float thickness = windowWidth/100;

@@ -18,6 +18,7 @@ public:
     void drawTiles(char board[6][6]);
     void drawX(int y, int x);
     void drawO(int y, int x);
+    void checkForClicks();
 };
 
 
