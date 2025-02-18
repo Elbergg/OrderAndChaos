@@ -8,11 +8,14 @@
 
 
 void GameUI::RunGame(GameApi* api) {
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(windowWidth, windowHeight, "OrderAndChaos");
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
         BeginDrawing();
+        windowWidth = GetScreenWidth();
+        windowHeight = GetScreenHeight();
         ClearBackground(RAYWHITE);
         this->drawGrids();
         this->drawTiles(api->state.board);
@@ -35,8 +38,8 @@ void GameUI::drawGrids() {
 }
 
 void GameUI::drawTiles(char board[6][6]) {
-    for (int i = 1; i < 6; i++) {
-        for (int j = 1; j < 6; j++) {
+    for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 6; j++) {
             char marker = board[i][j];
             if (marker == 1) {
                 this->drawX(i, j);
@@ -51,11 +54,11 @@ void GameUI::drawTiles(char board[6][6]) {
 void GameUI::drawX(int y, int x) {
     DrawLineEx(
         (Vector2){(x * static_cast<float>(windowWidth) * 11 / 73), y * static_cast<float>(windowWidth) * 11 / 73},
-        (Vector2){(x * static_cast<float>(windowWidth) * 11 / 73), (y + 1) * static_cast<float>(windowWidth) * 11 / 73},
+        (Vector2){((x+1) * static_cast<float>(windowWidth) * 11 / 73), (y+1) * static_cast<float>(windowWidth) * 11 / 73},
         10, DARKBLUE);
     DrawLineEx(
     (Vector2){(x * static_cast<float>(windowWidth) * 11 / 73), (y+1) * static_cast<float>(windowWidth) * 11 / 73},
-    (Vector2){(x * static_cast<float>(windowWidth) * 11 / 73), (y) * static_cast<float>(windowWidth) * 11 / 73},
+    (Vector2){((x+1) * static_cast<float>(windowWidth) * 11 / 73), (y) * static_cast<float>(windowWidth) * 11 / 73},
     10, DARKBLUE);
 }
 
