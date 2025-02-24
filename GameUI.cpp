@@ -21,6 +21,7 @@ void GameUI::RunGame() {
         this->drawGrids();
         checkForClicks();
         this->drawTiles(Api.state.board);
+        isEnd();
         EndDrawing();
     }
     CloseWindow();

@@ -13,7 +13,7 @@ public:
     GameApi() {
         state = State();
     }
-    void makeMove(int y, int x, char player);
+    void makeMove(int y, int x, int player);
 };
 
 
