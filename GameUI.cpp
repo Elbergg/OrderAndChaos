@@ -30,8 +30,7 @@ void GameUI::RunGame() {
 void GameUI::checkForClicks() {
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
         int x = GetMouseX()/(float)(windowWidth/6);
-        int y = GetMouseY()/(float)(windowHeight/6);
-        std::cout << x << " " << y << std::endl;
+        int y = GetMouseY()/(float)(windowHeight/6);x
         if (x >= 0 && y >= 0 && x <=5 && y<=5) {
             Api.makeMove(y,x,Api.state.player);
         }

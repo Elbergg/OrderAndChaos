@@ -14,6 +14,7 @@ public:
         state = State();
     }
     void makeMove(int y, int x, int player);
+    bool isEnd();
 };
 
 

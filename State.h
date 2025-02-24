@@ -5,7 +5,14 @@
 #include <cstring>
 
 
-
+struct EndInfo {
+    bool over;
+    int start_x;
+    int end_x;
+    int start_y;
+    int end_y;
+    int who;
+};
 
 class State {
 public:
@@ -25,9 +32,9 @@ public:
         isFinished = checkIfFinished();
     }
     char checkIfFinished();
-    char checkColumn(int x);
-    char checkRow(int y);
-    char checkAcrossLeft(int y_beg, int y_end, int x);
+    EndInfo checkColumn(int x);
+    EndInfo checkRow(int y);
+    EndInfo checkAcrossLeft(int y_beg, int y_end, int x);
     char checkAcrossRight(int y_beg, int y_end, int x);
 };
 
