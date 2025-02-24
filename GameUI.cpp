@@ -1,26 +1,93 @@
 //
 // Created by tomps on 17/02/2025.
 //
+#define RAYGUI_IMPLEMENTATION
 
 #include "GameUI.h"
-
+#include "raygui.h"
 #include "GameApi.h"
 #include <iostream>
 #include <cstdlib>
 #include <thread>
 #include <unistd.h>
 #define OFFSET 40
+#define PVP 1
+#define RANDOM 2
+#define EXPERT 3
 
 
-void GameUI::RunGame() {
+
+
+void GameUI::Run()
+{
+    showMenu();
+}
+
+
+void GameUI::showMenu()
+{
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(windowWidth, windowHeight, "OrderAndChaos");
-    ClearBackground((Color){10, 10, 10, 255});
-    SetTargetFPS(144);
+    InitWindow(600,400, "OrderAndChaosMenu");
+
+    SetTargetFPS(60);
+    int pvp = 0;
+    int pve = 0;
     while (!WindowShouldClose())
     {
         BeginDrawing();
-        ClearBackground((Color){10, 10, 10, 255});
+        ClearBackground(MENU);
+        GuiSetStyle(DEFAULT, TEXT_SIZE, 25);
+        GuiLabel(Rectangle{(float)GetScreenWidth()/6, (float)GetScreenHeight()/6,(float)GetScreenWidth()*2/3, (float)GetScreenHeight()/6}, "Welcome to order and chaos");
+        GuiSetStyle(DEFAULT, TEXT_SIZE, 10);
+        if (!pvp)
+            pvp = GuiButton(Rectangle{
+                          (float) GetScreenWidth() / 7, (float) GetScreenHeight() * 2 / 5, (float) GetScreenWidth() * 2 / 7,
+                          (float) GetScreenHeight() / 5
+                      }, "PVP");
+        GuiSetStyle(LABEL, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+        if (!pve)
+            pve = GuiButton(Rectangle{
+                          (float) GetScreenWidth() * 4 / 7, (float) GetScreenHeight() * 2 / 5,
+                          (float) GetScreenWidth() * 2 / 7, (float) GetScreenHeight() / 5
+                      }, "PVE");
+        if (pvp==1) {
+            EndDrawing();
+            CloseWindow();
+            RunGame(PVP);
+        }
+        if (pve) {
+            int i = -1;
+            int drop = GuiDropdownBox(Rectangle{
+                      (float) GetScreenWidth() * 4 / 7, (float) GetScreenHeight() * 2 / 5,
+                      (float) GetScreenWidth() * 2 / 7, (float) GetScreenHeight() / 7
+                  }, "Random;Expert", &i, true);
+            if (drop == 1) {
+                EndDrawing();
+                CloseWindow();
+                RunGame(RANDOM);
+            }
+            if (drop == 2) {
+                EndDrawing();
+                CloseWindow();
+                RunGame(EXPERT);
+            }
+        }
+        EndDrawing();
+    }
+    CloseWindow();
+}
+
+
+
+void GameUI::RunGame(int mode) {
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    InitWindow(windowWidth, windowHeight, "OrderAndChaos");
+    ClearBackground(BACKGROUND);
+    SetTargetFPS(60);
+    while (!WindowShouldClose())
+    {
+        BeginDrawing();
+        ClearBackground(BACKGROUND);
         windowWidth = GetScreenWidth();
         windowHeight = GetScreenHeight();
         this->drawGrids();
@@ -75,12 +142,12 @@ void GameUI::drawGrids() {
     for (int i = 1; i < 6; i++) {
         DrawLineEx((Vector2){static_cast<float>(windowWidth) / 6 * i, 0},
                    (Vector2){static_cast<float>(windowWidth / 6 * i), static_cast<float>(windowHeight)},
-                   thickness,(Color){235,64,237, 255});
+                   thickness,GRID);
     }
     for (int i = 1; i < 6; i++) {
         DrawLineEx((Vector2){0, static_cast<float>(windowHeight) / 6 * i},
                    (Vector2){static_cast<float>(windowWidth), static_cast<float>(windowHeight / 6 * i),},
-                   thickness,(Color){235,64,237, 255});
+                   thickness,GRID);
     }
 }
 
@@ -103,11 +170,11 @@ void GameUI::drawX(int y, int x) {
     DrawLineEx(
         (Vector2){(x * static_cast<float>(windowWidth) * 1 / 6 +padding_x), y * static_cast<float>(windowHeight) * 1/6 + padding_y},
         (Vector2){((x+1) * static_cast<float>(windowWidth) * 1 / 6 -padding_x), (y+1) * static_cast<float>(windowHeight) * 1/6 - padding_y},
-        10, (Color){32, 164, 243, 255});
+        10, X);
     DrawLineEx(
     (Vector2){(x * static_cast<float>(windowWidth) * 1 / 6 +padding_x), (y+1) * static_cast<float>(windowHeight) * 1/6 - padding_y},
     (Vector2){((x+1) * static_cast<float>(windowWidth) * 1 / 6 -padding_x), y * static_cast<float>(windowHeight) * 1/6 + padding_y},
-    10, (Color){32, 164, 243, 255});
+    10, X);
 }
 
 void GameUI::drawO(int y, int x) {
@@ -119,6 +186,6 @@ void GameUI::drawO(int y, int x) {
     DrawRing((Vector2){
                  ((x + 0.5f) * static_cast<float>(windowWidth) * 1 / 6),
                  (y + 0.5f) * static_cast<float>(windowHeight) * 1 / 6
-             }, radius * 0.9f, radius, 360.0f, 0.0f,0.0f, (Color) {252, 224, 248, 255}
+             }, radius * 0.9f, radius, 360.0f, 0.0f,0.0f, O
     );
 }

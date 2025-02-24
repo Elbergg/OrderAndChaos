@@ -22,6 +22,15 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
     endif()
 endif()
 
+include(FetchContent)
+FetchContent_Declare(
+        raygui
+        DOWNLOAD_EXTRACT_TIMESTAMP OFF
+        URL https://github.com/raysan5/raygui/archive/refs/tags/4.0.tar.gz
+)
+FetchContent_MakeAvailable(raygui)
+
+
 # Our Project
 
 add_executable(${PROJECT_NAME}
@@ -34,6 +43,7 @@ add_executable(${PROJECT_NAME}
         GameUI.h)
 #set(raylib_VERBOSE 1)
 target_link_libraries(${PROJECT_NAME} raylib)
+target_include_directories(${PROJECT_NAME} PRIVATE ${raygui_SOURCE_DIR}/src)
 
 # Web Configurations
 if (${PLATFORM} STREQUAL "Web")

@@ -3,7 +3,11 @@
 //
 #include "GameApi.h"
 #include "raylib.h"
-
+#define BACKGROUND (Color){22, 22, 22, 255}
+#define GRID (Color){235,64,237, 255}
+#define X (Color){32, 164, 243, 255}
+#define O (Color) {252, 224, 248, 255}
+#define MENU (Color) {201, 237, 220,255}
 
 class GameUI {
 public:
@@ -14,7 +18,9 @@ public:
         windowWidth = width;
         windowHeight = height;
     }
-    void RunGame();
+    void Run();
+    void RunGame(int mode);
+    void showMenu();
     void drawGrids();
     void drawTiles(char board[6][6]);
     void drawX(int y, int x);
