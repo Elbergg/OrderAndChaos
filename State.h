@@ -36,6 +36,7 @@ public:
     EndInfo checkRow(int y);
     EndInfo checkAcrossLeft(int y_beg, int y_end, int x);
     EndInfo checkAcrossRight(int y_beg, int y_end, int x);
+    EndInfo checkChaos();
 };
 
 

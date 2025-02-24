@@ -14,22 +14,29 @@
 #define PVP 1
 #define RANDOM 2
 #define EXPERT 3
-
+#define FIRST 1
+#define NEXT 2
 
 
 
 void GameUI::Run()
 {
-    showMenu();
+    showMenu(FIRST);
 }
 
 
-void GameUI::showMenu()
+void GameUI::showMenu(int mode)
 {
+
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(600,400, "OrderAndChaosMenu");
-
     SetTargetFPS(60);
+    if (mode==NEXT) {
+        this->Api = GameApi();
+        GuiLoadStyleDefault();
+        Font defaultFont = GetFontDefault();
+        GuiSetFont(defaultFont);
+    }
     int pvp = 0;
     int pve = 0;
     while (!WindowShouldClose())
@@ -50,12 +57,18 @@ void GameUI::showMenu()
                           (float) GetScreenWidth() * 4 / 7, (float) GetScreenHeight() * 2 / 5,
                           (float) GetScreenWidth() * 2 / 7, (float) GetScreenHeight() / 5
                       }, "PVE");
-        if (pvp==1) {
+        if (!pve && !pvp) {
+            EndDrawing();
+            continue;
+        }
+        if (pvp==1)
+        {
             EndDrawing();
             CloseWindow();
             RunGame(PVP);
         }
-        if (pve) {
+        if (pve)
+        {
             int i = -1;
             int drop = GuiDropdownBox(Rectangle{
                       (float) GetScreenWidth() * 4 / 7, (float) GetScreenHeight() * 2 / 5,
@@ -96,11 +109,24 @@ void GameUI::RunGame(int mode) {
         EndInfo check = isEnd();
         if (check.over)
         {
-            drawEndLine(check);
+            if (check.who == 1) {
+                drawEndLine(check);
+                EndDrawing();
+            }
+            else {
+                drawRectangles();
+                EndDrawing();
+            }
+            showMenu(NEXT);
+            return;
         }
         EndDrawing();
     }
     CloseWindow();
+}
+
+void GameUI::drawRectangles() {
+    return;
 }
 
 
@@ -111,8 +137,7 @@ EndInfo GameUI::isEnd()
 
 void GameUI::drawEndLine(EndInfo check)
 {
-    for (int i = 0; i<30; i++)
-    {
+    for (int i = 0; i< 100; i++) {
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
         int tileWidth = windowWidth/6;
         int tileHeight = windowHeight/6;

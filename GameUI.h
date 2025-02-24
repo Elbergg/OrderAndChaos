@@ -20,13 +20,14 @@ public:
     }
     void Run();
     void RunGame(int mode);
-    void showMenu();
+    void showMenu(int mode);
     void drawGrids();
     void drawTiles(char board[6][6]);
     void drawX(int y, int x);
     void drawO(int y, int x);
     void checkForClicks();
     void drawEndLine(EndInfo check);
+    void drawRectangles();
     EndInfo isEnd();
 };
 

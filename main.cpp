@@ -10,6 +10,6 @@ int main(void)
 {
     GameApi gameApi = GameApi();
     GameUI gameUI = GameUI(500, 500, gameApi);
-    gameUI.showMenu();
+    gameUI.Run();
     return 0;
 }

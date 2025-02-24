@@ -30,17 +30,31 @@ EndInfo State::checkIfFinished() {
     check = this->checkAcrossLeft(1,6,0);
     if (check.over)
         return check;
-    check = this->checkAcrossRight(1,6,5);
+    check = this->checkAcrossRight(4,0,0);
     if (check.over)
         return check;
-    check = this->checkAcrossRight(1,6,5);
+    check = this->checkAcrossRight(5,0,0);
     if (check.over)
         return check;
-    check = this->checkAcrossRight(0,5,4);
+    check = this->checkAcrossRight(5,0,1);
+    if (check.over)
+        return check;
+    check = this->checkChaos();
     if (check.over)
         return check;
     return EndInfo{false,0,0,0,0,0};
 }
+
+EndInfo State::checkChaos() {
+    for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 6; j++) {
+            if (board[i][j]==0)
+                return EndInfo{false,0,0,0,0,0};
+        }
+    }
+    return EndInfo{true,0,0,0,0, 2};
+}
+
 
 EndInfo State::checkColumn(int x) {
     int count = 0;
@@ -105,7 +119,7 @@ EndInfo State::checkAcrossRight(int y_beg, int y_end, int x)
             count = 0;
         }
         if (count == 5)
-            return EndInfo{true, j-4,j,i-4,i,1};
+            return EndInfo{true, j-4,j,i+4,i,1};
         j++;
     }
     return EndInfo{false,0,0,0,0,0};
