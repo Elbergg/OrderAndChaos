@@ -6,25 +6,31 @@
 
 #include "GameApi.h"
 #include <iostream>
+#include <cstdlib>
+#include <thread>
+#include <unistd.h>
 #define OFFSET 40
+
 
 void GameUI::RunGame() {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(windowWidth, windowHeight, "OrderAndChaos");
     ClearBackground((Color){10, 10, 10, 255});
-    SetTargetFPS(60);
+    SetTargetFPS(144);
     while (!WindowShouldClose())
     {
         BeginDrawing();
+        ClearBackground((Color){10, 10, 10, 255});
         windowWidth = GetScreenWidth();
         windowHeight = GetScreenHeight();
         this->drawGrids();
         checkForClicks();
         this->drawTiles(Api.state.board);
         EndInfo check = isEnd();
-        std::cout<<check.over << std::endl;
         if (check.over)
+        {
             drawEndLine(check);
+        }
         EndDrawing();
     }
     CloseWindow();
@@ -38,12 +44,16 @@ EndInfo GameUI::isEnd()
 
 void GameUI::drawEndLine(EndInfo check)
 {
-    int tileWidth = windowWidth/6;
-    int tileHeight = windowHeight/6;
-    int paddingWidth = windowWidth/12;
-    int paddingHeight = windowHeight/12;
-    DrawLineEx(Vector2{(float) check.start_x*tileWidth + paddingWidth, (float) check.start_y*tileHeight + paddingHeight},
-               Vector2{(float) check.end_x*tileWidth + paddingWidth, (float) check.end_y*tileHeight + paddingHeight}, windowWidth / 30, Color{255,234,222,255});
+    for (int i = 0; i<30; i++)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(5));
+        int tileWidth = windowWidth/6;
+        int tileHeight = windowHeight/6;
+        int paddingWidth = windowWidth/12;
+        int paddingHeight = windowHeight/12;
+        DrawLineEx(Vector2{(float) check.start_x*tileWidth + paddingWidth, (float) check.start_y*tileHeight + paddingHeight},
+                   Vector2{(float) check.end_x*tileWidth + paddingWidth, (float) check.end_y*tileHeight + paddingHeight}, windowWidth / 30, Color{static_cast<unsigned char>(rand()% 256),static_cast<unsigned char>(rand()%256),static_cast<unsigned char>(rand()%256),255});
+    }
 }
 
 void GameUI::checkForClicks()
