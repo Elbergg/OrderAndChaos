@@ -3,14 +3,14 @@
 //
 
 #include "GameApi.h"
-
+#include "State.h"
 void GameApi::makeMove(int y, int x, int player)
 {
    state = state.makeMove(y,x,player);
 }
 
-bool GameApi::isEnd()
+EndInfo GameApi::isEnd()
 {
-   return state.isFinished();
+   return state.checkIfFinished();
 }
 

@@ -21,16 +21,36 @@ void GameUI::RunGame() {
         this->drawGrids();
         checkForClicks();
         this->drawTiles(Api.state.board);
-        isEnd();
+        EndInfo check = isEnd();
+        std::cout<<check.over << std::endl;
+        if (check.over)
+            drawEndLine(check);
         EndDrawing();
     }
     CloseWindow();
 }
 
-void GameUI::checkForClicks() {
+
+EndInfo GameUI::isEnd()
+{
+    return Api.isEnd();
+}
+
+void GameUI::drawEndLine(EndInfo check)
+{
+    int tileWidth = windowWidth/6;
+    int tileHeight = windowHeight/6;
+    int paddingWidth = windowWidth/12;
+    int paddingHeight = windowHeight/12;
+    DrawLineEx(Vector2{(float) check.start_x*tileWidth + paddingWidth, (float) check.start_y*tileHeight + paddingHeight},
+               Vector2{(float) check.end_x*tileWidth + paddingWidth, (float) check.end_y*tileHeight + paddingHeight}, windowWidth / 30, Color{255,234,222,255});
+}
+
+void GameUI::checkForClicks()
+{
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
         int x = GetMouseX()/(float)(windowWidth/6);
-        int y = GetMouseY()/(float)(windowHeight/6);x
+        int y = GetMouseY()/(float)(windowHeight/6);
         if (x >= 0 && y >= 0 && x <=5 && y<=5) {
             Api.makeMove(y,x,Api.state.player);
         }

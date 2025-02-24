@@ -20,7 +20,8 @@ public:
     void drawX(int y, int x);
     void drawO(int y, int x);
     void checkForClicks();
-    bool isEnd();
+    void drawEndLine(EndInfo check);
+    EndInfo isEnd();
 };
 
 

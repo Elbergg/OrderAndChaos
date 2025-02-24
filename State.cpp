@@ -11,20 +11,35 @@ State State::makeMove(int y,int x, int player) {
     return newState;
 }
 
-char State::checkIfFinished() {
+EndInfo State::checkIfFinished() {
+    EndInfo check;
     for (int x = 0; x < 6; x++) {
-        if ( this->checkColumn(x) || this->checkRow(x))
-            return 1;
+            check = checkRow(x);
+        if (check.over)
+            return check;
+        check = checkColumn(x);
+        if (check.over)
+            return check;
     }
-    if (
-    this->checkAcrossLeft(0, 6, 0) ||
-    this->checkAcrossLeft(0, 5, 1) ||
-    this->checkAcrossLeft(1, 6, 0) ||
-    this->checkAcrossRight(0, 6, 5) ||
-    this->checkAcrossRight(1, 6, 5) ||
-    this->checkAcrossRight(0, 5, 4))
-        return 1;
-    return 0;
+    check = this->checkAcrossLeft(0,6,0);
+    if (check.over)
+        return check;
+    check = this->checkAcrossLeft(0,5,1);
+    if (check.over)
+        return check;
+    check = this->checkAcrossLeft(1,6,0);
+    if (check.over)
+        return check;
+    check = this->checkAcrossRight(1,6,5);
+    if (check.over)
+        return check;
+    check = this->checkAcrossRight(1,6,5);
+    if (check.over)
+        return check;
+    check = this->checkAcrossRight(0,5,4);
+    if (check.over)
+        return check;
+    return EndInfo{false,0,0,0,0,0};
 }
 
 EndInfo State::checkColumn(int x) {
@@ -37,7 +52,7 @@ EndInfo State::checkColumn(int x) {
             count = 0;
         }
         if (count == 5)
-            return EndInfo{true, x, x, i-5, i, 1};
+            return EndInfo{true, x, x, i-4, i, 1};
     }
     return EndInfo{false, 0, 0, 0, 0, 0};
 }
@@ -53,7 +68,7 @@ EndInfo State::checkColumn(int x) {
             count = 0;
         }
         if (count == 5)
-            return EndInfo{true, i-5, i, y, y, 1};
+            return EndInfo{true, i-4, i, y, y, 1};
     }
     return EndInfo{false, 0, 0, 0, 0, 0};
 }
@@ -71,13 +86,13 @@ EndInfo State::checkAcrossLeft(int y_beg, int y_end, int x)
             count = 0;
         }
         if (count == 5)
-            return EndInfo{};
+            return EndInfo{true, j,j-4,i,i-4,1};
         j++;
     }
-    return 0;
+    return EndInfo{false,0,0,0,0,0};
 }
 
-char State::checkAcrossRight(int y_beg, int y_end, int x)
+EndInfo State::checkAcrossRight(int y_beg, int y_end, int x)
 {
     int count = 0;
     int j = x;
@@ -90,9 +105,9 @@ char State::checkAcrossRight(int y_beg, int y_end, int x)
             count = 0;
         }
         if (count == 5)
-            return 1;
+            return EndInfo{true, j-4,j,i-4,i,1};
         j++;
     }
-    return 0;
+    return EndInfo{false,0,0,0,0,0};
 }
 
