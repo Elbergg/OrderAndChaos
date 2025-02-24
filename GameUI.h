@@ -9,11 +9,12 @@ class GameUI {
 public:
     int windowWidth;
     int windowHeight;
-    GameUI(int width, int height) {
+    GameApi& Api;
+    GameUI(int width, int height, GameApi& api) : Api(api) {
         windowWidth = width;
         windowHeight = height;
     }
-    void RunGame(GameApi* api);
+    void RunGame();
     void drawGrids();
     void drawTiles(char board[6][6]);
     void drawX(int y, int x);

@@ -5,10 +5,10 @@
 #include "GameUI.h"
 
 #include "GameApi.h"
-
+#include <iostream>
 #define OFFSET 40
 
-void GameUI::RunGame(GameApi* api) {
+void GameUI::RunGame() {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(windowWidth, windowHeight, "OrderAndChaos");
     ClearBackground((Color){10, 10, 10, 255});
@@ -20,27 +20,21 @@ void GameUI::RunGame(GameApi* api) {
         windowHeight = GetScreenHeight();
         this->drawGrids();
         checkForClicks();
-        this->drawTiles(api->state.board);
+        this->drawTiles(Api.state.board);
         EndDrawing();
     }
     CloseWindow();
 }
 
 void GameUI::checkForClicks() {
-    int player;
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-        player=1;
-    }
-    else if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
-        player=2;
-    }
-    if (GetMouseX()!= 0 && GetMouseY()!= 0) {
-        int x = windowWidth/GetMouseX()/6;
-        int y = windowHeight/GetMouseY()/6;
-        if (player == 1 && x > 0 && y > 0)
-            drawX(y,x);
-        else if (player == 2 && x > 0 && y > 0)
-            drawO(y,x);
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
+        int x = GetMouseX()/(float)(windowWidth/6);
+        int y = GetMouseY()/(float)(windowHeight/6);
+        std::cout << x << " " << y << std::endl;
+        if (x >= 0 && y >= 0 && x <=5 && y<=5) {
+            Api.makeMove(y,x,Api.state.player);
+        }
+
     }
 
 }

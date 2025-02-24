@@ -4,7 +4,7 @@
 
 #include "State.h"
 
-State State::makeMove(int y,int x, char player) {
+State State::makeMove(int y,int x, int player) {
     State newState = State(board, player, y, x);
     return newState;
 }
