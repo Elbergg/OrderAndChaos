@@ -11,9 +11,6 @@
 #include <thread>
 #include <unistd.h>
 #define OFFSET 40
-#define PVP 1
-#define RANDOM 2
-#define EXPERT 3
 #define FIRST 1
 #define NEXT 2
 
@@ -27,7 +24,6 @@ void GameUI::Run()
 
 void GameUI::showMenu(int mode)
 {
-
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(600,400, "OrderAndChaosMenu");
     SetTargetFPS(60);
@@ -92,7 +88,9 @@ void GameUI::showMenu(int mode)
 
 
 
-void GameUI::RunGame(int mode) {
+void GameUI::RunGame(int mode)
+{
+    Api.mode = mode;
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(windowWidth, windowHeight, "OrderAndChaos");
     ClearBackground(BACKGROUND);
@@ -105,6 +103,8 @@ void GameUI::RunGame(int mode) {
         windowHeight = GetScreenHeight();
         this->drawGrids();
         checkForClicks();
+        if (mode != PVP)
+            Api.makeEnemyMove();
         this->drawTiles(Api.state.board);
         EndInfo check = isEnd();
         if (check.over)
