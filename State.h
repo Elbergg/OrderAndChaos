@@ -3,7 +3,7 @@
 //
 #pragma once
 #include <cstring>
-
+#include "Minimax.h"
 
 struct EndInfo {
     bool over;
@@ -20,6 +20,8 @@ public:
     int player;
     bool isFinished;
     State makeMove(int y,  int x, int player);
+    State randomMove();
+    State expertMove();
     State() {
         std::memset(board, 0, sizeof(board));
         player = 1;

@@ -4,11 +4,31 @@
 
 #include "State.h"
 
+#include <cstdlib>
 
 
 State State::makeMove(int y,int x, int player) {
     State newState = State(board, player, y, x);
     return newState;
+}
+
+State State::randomMove()
+{
+    int y = rand()%6;
+    int x = rand()%6;
+    while (board[y][x]!=0)
+    {
+        y = rand()%6;
+        x = rand()%6;
+    }
+    return makeMove(y,x,2);
+}
+
+State State::expertMove()
+{
+    Minimax minimax;
+    Cords result = minimax.AlphaBeta();
+    return makeMove(result.y, result.x, 2);
 }
 
 

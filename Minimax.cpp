@@ -7,5 +7,6 @@
 
 Cords Minimax::AlphaBeta()
 {
-
+    return (Cords){0,0};
 }
+
