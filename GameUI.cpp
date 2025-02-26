@@ -111,6 +111,9 @@ void GameUI::RunGame(int mode)
         if (check.over)
         {
             EndDrawing();
+            BeginDrawing();
+            drawTiles(Api.state.board);
+            EndDrawing();
             if (check.who == 1) {
                 drawEndLine(check);
             }
@@ -159,14 +162,16 @@ EndInfo GameUI::isEnd()
 
 void GameUI::drawEndLine(EndInfo check)
 {
-    for (int i = 0; i< 100; i++) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(5));
+    for (int i = 0; i< 30; i++) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        BeginDrawing();
         int tileWidth = windowWidth/6;
         int tileHeight = windowHeight/6;
         int paddingWidth = windowWidth/12;
         int paddingHeight = windowHeight/12;
         DrawLineEx(Vector2{(float) check.start_x*tileWidth + paddingWidth, (float) check.start_y*tileHeight + paddingHeight},
                    Vector2{(float) check.end_x*tileWidth + paddingWidth, (float) check.end_y*tileHeight + paddingHeight}, windowWidth / 30, RANDOMCOLOR);
+        EndDrawing();
     }
 }
 
