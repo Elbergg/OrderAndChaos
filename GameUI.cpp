@@ -19,11 +19,11 @@
 
 void GameUI::Run()
 {
-    showMenu(FIRST);
+    showMenu(FIRST, 0);
 }
 
 
-void GameUI::showMenu(int mode)
+void GameUI::showMenu(int mode, int who)
 {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(600,400, "OrderAndChaosMenu");
@@ -41,7 +41,17 @@ void GameUI::showMenu(int mode)
         BeginDrawing();
         ClearBackground(MENU);
         GuiSetStyle(DEFAULT, TEXT_SIZE, 25);
-        GuiLabel(Rectangle{(float)GetScreenWidth()/6, (float)GetScreenHeight()/6,(float)GetScreenWidth()*2/3, (float)GetScreenHeight()/6}, "Welcome to order and chaos");
+        if (mode==NEXT)
+        {
+            if (who==1)
+                GuiLabel(Rectangle{(float)GetScreenWidth()/6, (float)GetScreenHeight()/6,(float)GetScreenWidth()*2/3, (float)GetScreenHeight()/6}, "Order won!");
+            else if (who==2)
+                GuiLabel(Rectangle{(float)GetScreenWidth()/6, (float)GetScreenHeight()/6,(float)GetScreenWidth()*2/3, (float)GetScreenHeight()/6}, "Chaos won!");
+        }
+        else
+        {
+            GuiLabel(Rectangle{(float)GetScreenWidth()/6, (float)GetScreenHeight()/6,(float)GetScreenWidth()*2/3, (float)GetScreenHeight()/6}, "Welcome to order and chaos");
+        }
         GuiSetStyle(DEFAULT, TEXT_SIZE, 10);
         if (!pvp)
             pvp = GuiButton(Rectangle{
@@ -120,7 +130,7 @@ void GameUI::RunGame(int mode)
             else {
                 drawRectangles();
             }
-            showMenu(NEXT);
+            showMenu(NEXT, check.who);
             return;
         }
         EndDrawing();

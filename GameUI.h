@@ -21,7 +21,7 @@ public:
     }
     void Run();
     void RunGame(int mode);
-    void showMenu(int mode);
+    void showMenu(int mode, int who);
     void drawGrids();
     void drawTiles(char board[6][6]);
     void drawX(int y, int x);
