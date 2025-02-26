@@ -22,6 +22,7 @@ public:
     State makeMove(int y,  int x, int player);
     State randomMove();
     State expertMove();
+    int heuristic();
     State() {
         std::memset(board, 0, sizeof(board));
         player = 1;

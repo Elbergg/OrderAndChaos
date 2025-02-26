@@ -146,3 +146,7 @@ EndInfo State::checkAcrossRight(int y_beg, int y_end, int x)
     return EndInfo{false,0,0,0,0,0};
 }
 
+int State::heuristic()
+{
+
+}

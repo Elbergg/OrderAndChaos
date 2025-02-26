@@ -4,7 +4,7 @@
 
 #ifndef MINIMAX_H
 #define MINIMAX_H
-
+#include "State.h"
 
 struct Cords
 {
@@ -15,7 +15,8 @@ struct Cords
 class Minimax {
 public:
     int depth();
-    Cords AlphaBeta();
+
+    Cords AlphaBeta(State state, int depth, int alpha, int beta);
 };
 
 
