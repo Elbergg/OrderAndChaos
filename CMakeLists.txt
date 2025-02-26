@@ -40,7 +40,9 @@ add_executable(${PROJECT_NAME}
         State.h
         main.cpp
         GameUI.cpp
-        GameUI.h)
+        GameUI.h
+        Minimax.cpp
+        Minimax.h)
 #set(raylib_VERBOSE 1)
 target_link_libraries(${PROJECT_NAME} raylib)
 target_include_directories(${PROJECT_NAME} PRIVATE ${raygui_SOURCE_DIR}/src)

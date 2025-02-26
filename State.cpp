@@ -11,6 +11,7 @@ State State::makeMove(int y,int x, int player) {
     return newState;
 }
 
+
 EndInfo State::checkIfFinished() {
     EndInfo check;
     for (int x = 0; x < 6; x++) {

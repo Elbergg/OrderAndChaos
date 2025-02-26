@@ -7,6 +7,8 @@
 #include <cstdlib>
 
 #include "State.h"
+#include "Minimax.h"
+
 void GameApi::makeMove(int y, int x, int player)
 {
    state = state.makeMove(y,x,player);
@@ -25,7 +27,9 @@ void GameApi::randomMove()
 }
 void GameApi::expertMove()
 {
-
+   Minimax minimax;
+   Cords result = minimax.AlphaBeta();
+   makeMove()
 }
 
 
