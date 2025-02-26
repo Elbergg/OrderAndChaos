@@ -3,6 +3,9 @@
 //
 
 #include "GameApi.h"
+
+#include <cstdlib>
+
 #include "State.h"
 void GameApi::makeMove(int y, int x, int player)
 {
@@ -11,7 +14,14 @@ void GameApi::makeMove(int y, int x, int player)
 
 void GameApi::randomMove()
 {
-
+    int y = rand()%6;
+    int x = rand()%6;
+    while (state.board[y][x]!=0)
+    {
+       y = rand()%6;
+       x = rand()%6;
+    }
+   makeMove(y,x,2);
 }
 void GameApi::expertMove()
 {

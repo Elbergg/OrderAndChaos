@@ -8,6 +8,7 @@
 #define X (Color){32, 164, 243, 255}
 #define O (Color) {252, 224, 248, 255}
 #define MENU (Color) {201, 237, 220,255}
+#define RANDOMCOLOR Color{static_cast<unsigned char>(rand()% 256),static_cast<unsigned char>(rand()%256),static_cast<unsigned char>(rand()%256),255}
 
 class GameUI {
 public:

@@ -9,6 +9,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <thread>
+#include <vector>
 #include <unistd.h>
 #define OFFSET 40
 #define FIRST 1
@@ -103,19 +104,18 @@ void GameUI::RunGame(int mode)
         windowHeight = GetScreenHeight();
         this->drawGrids();
         checkForClicks();
-        if (mode != PVP)
+        if (mode != PVP && Api.state.player == 2)
             Api.makeEnemyMove();
         this->drawTiles(Api.state.board);
         EndInfo check = isEnd();
         if (check.over)
         {
+            EndDrawing();
             if (check.who == 1) {
                 drawEndLine(check);
-                EndDrawing();
             }
             else {
                 drawRectangles();
-                EndDrawing();
             }
             showMenu(NEXT);
             return;
@@ -125,8 +125,30 @@ void GameUI::RunGame(int mode)
     CloseWindow();
 }
 
-void GameUI::drawRectangles() {
-    return;
+void GameUI::drawRectangles()
+{
+    std::vector<int> x_list;
+    std::vector<int> y_list;
+    std::vector<int> width_list;
+    std::vector<int> height_list;
+    std::vector<Color> colors;
+    for (int i = 0; i < 30; i++)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        BeginDrawing();
+        int x = rand()%windowWidth;
+        int y = rand()%windowHeight;
+        x_list.push_back(x);
+        y_list.push_back(y);
+        width_list.push_back(rand()%(windowWidth-x-1));
+        height_list.push_back(rand()%(windowHeight-y-1));
+        colors.push_back(RANDOMCOLOR);
+        for (int j = 0; j < width_list.size(); j++)
+        {
+            DrawRectangle(x_list[j],y_list[j],width_list[j], height_list[j], colors[j]);
+        }
+        EndDrawing();
+    }
 }
 
 
@@ -144,7 +166,7 @@ void GameUI::drawEndLine(EndInfo check)
         int paddingWidth = windowWidth/12;
         int paddingHeight = windowHeight/12;
         DrawLineEx(Vector2{(float) check.start_x*tileWidth + paddingWidth, (float) check.start_y*tileHeight + paddingHeight},
-                   Vector2{(float) check.end_x*tileWidth + paddingWidth, (float) check.end_y*tileHeight + paddingHeight}, windowWidth / 30, Color{static_cast<unsigned char>(rand()% 256),static_cast<unsigned char>(rand()%256),static_cast<unsigned char>(rand()%256),255});
+                   Vector2{(float) check.end_x*tileWidth + paddingWidth, (float) check.end_y*tileHeight + paddingHeight}, windowWidth / 30, RANDOMCOLOR);
     }
 }
 
@@ -153,6 +175,8 @@ void GameUI::checkForClicks()
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
         int x = GetMouseX()/(float)(windowWidth/6);
         int y = GetMouseY()/(float)(windowHeight/6);
+        if (Api.state.board[y][x]!=0)
+            return;
         if (x >= 0 && y >= 0 && x <=5 && y<=5) {
             Api.makeMove(y,x,Api.state.player);
         }
