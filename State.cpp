@@ -32,9 +32,9 @@ State State::expertMove()
     std::vector<int> results;
     for (auto succ: succs)
     {
-        results.push_back(minimax.AlphaBeta(succ, 3, -100000, 100000));
+        results.push_back(minimax.AlphaBeta(succ, 2, -100000, 100000));
     }
-    int smallest = 0;
+    int smallest = 100000000;
     int idx = 0;
     for (int i = 0; i < results.size(); i++)
     {
@@ -106,6 +106,8 @@ EndInfo State::checkColumn(int x, int mode) {
         }
         if (count == 5 && mode == END)
             return EndInfo{true, x, x, i-4, i, 1};
+        if (count == 5 && mode == HEURISTIC)
+            return EndInfo{false, 999, 0, 0,0,0};
     }
     if (mode == HEURISTIC)
     {
@@ -129,6 +131,8 @@ EndInfo State::checkColumn(int x, int mode) {
         }
         if (count == 5 && mode == END)
             return EndInfo{true, i-4, i, y, y, 1};
+        if (count == 5 && mode == HEURISTIC)
+            return EndInfo{false, 999, 0, 0,0,0};
     }
     if (mode == HEURISTIC)
     {
@@ -154,6 +158,8 @@ EndInfo State::checkAcrossLeft(int y_beg, int y_end, int x, int mode)
         }
         if (count == 5 && mode == END)
             return EndInfo{true, j,j-4,i,i-4,1};
+        if (count == 5 && mode == HEURISTIC)
+            return EndInfo{false, 999, 0, 0,0,0};
         j++;
     }
     if (mode == HEURISTIC)
@@ -180,6 +186,8 @@ EndInfo State::checkAcrossRight(int y_beg, int y_end, int x, int mode)
         }
         if (count == 5 && mode == END)
             return EndInfo{true, j-4,j,i+4,i,1};
+        if (count == 5 && mode == HEURISTIC)
+            return EndInfo{false, 999, 0, 0,0,0};
         j++;
     }
     if (mode == HEURISTIC)
