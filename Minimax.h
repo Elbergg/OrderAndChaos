@@ -16,7 +16,7 @@ class Minimax {
 public:
     int depth();
 
-    Cords AlphaBeta(State state, int depth, int alpha, int beta);
+    int AlphaBeta(State state, int depth, int alpha, int beta);
 };
 
 

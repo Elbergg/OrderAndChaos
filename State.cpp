@@ -77,76 +77,115 @@ EndInfo State::checkChaos() {
 }
 
 
-EndInfo State::checkColumn(int x) {
+EndInfo State::checkColumn(int x, int mode=END) {
     int count = 0;
+    int hcount = 0;
     for (int i = 0; i < 6; i++) {
         if (board[i][x] == 1) {
             count++;
+            hcount++;
         }
         else {
             count = 0;
         }
-        if (count == 5)
+        if (count == 5 && mode == END)
             return EndInfo{true, x, x, i-4, i, 1};
+    }
+    if (mode == HEURISTIC)
+    {
+        hcount = hcount*  hcount;
+        return EndInfo{false, hcount, 0, 0, 0, 0};
     }
     return EndInfo{false, 0, 0, 0, 0, 0};
 }
 
 
- EndInfo State::checkRow(int y) {
+ EndInfo State::checkRow(int y, int mode=END) {
     int count = 0;
+    int hcount = 0;
     for (int i = 0; i < 6; i++) {
         if (board[y][i] == 1) {
             count++;
+            hcount++;
         }
         else {
             count = 0;
         }
-        if (count == 5)
+        if (count == 5 && mode == END)
             return EndInfo{true, i-4, i, y, y, 1};
+    }
+    if (mode == HEURISTIC)
+    {
+        hcount = hcount * hcount;
+        return EndInfo{false, hcount, 0, 0, 0,0};
     }
     return EndInfo{false, 0, 0, 0, 0, 0};
 }
 
-EndInfo State::checkAcrossLeft(int y_beg, int y_end, int x)
+EndInfo State::checkAcrossLeft(int y_beg, int y_end, int x, int mode = END)
 {
     int count = 0;
+    int hcount = 0;
     int j = x;
     for (int i = y_beg; i < y_end; i++)
     {
         if (board[i][j] == 1) {
             count++;
+            hcount++;
         }
         else {
             count = 0;
         }
-        if (count == 5)
+        if (count == 5 && mode == END)
             return EndInfo{true, j,j-4,i,i-4,1};
         j++;
+    }
+    if (mode == HEURISTIC)
+    {
+        hcount = hcount * hcount;
+        return EndInfo{false, hcount, 0, 0, 0, 0};
     }
     return EndInfo{false,0,0,0,0,0};
 }
 
-EndInfo State::checkAcrossRight(int y_beg, int y_end, int x)
+EndInfo State::checkAcrossRight(int y_beg, int y_end, int x, int mode=END)
 {
     int count = 0;
+    int hcount = 0;
     int j = x;
     for (int i = y_beg; i > y_end; i--)
     {
         if (board[i][j] == 1) {
             count++;
+            hcount++;
         }
         else {
             count = 0;
         }
-        if (count == 5)
+        if (count == 5 && mode == END)
             return EndInfo{true, j-4,j,i+4,i,1};
         j++;
+    }
+    if (mode == HEURISTIC)
+    {
+        hcount = hcount * hcount;
+        return EndInfo{false, hcount, 0, 0, 0, 0};
     }
     return EndInfo{false,0,0,0,0,0};
 }
 
 int State::heuristic()
 {
-
+    int count = 0;
+    for (int x = 0; x < 6; x++) {
+        count += checkRow(x).start_x;
+        count += checkColumn(x).start_x;
+    }
+    count += this->checkAcrossLeft(0,6,0).start_x;
+    count += this->checkAcrossLeft(0,5,1).start_x;
+    count += this->checkAcrossLeft(1,6,0).start_x;
+    count += this->checkAcrossRight(4,0,0).start_x;
+    count += this->checkAcrossRight(5,0,0).start_x;
+    count += this->checkAcrossRight(5,0,1).start_x;
+    return count;
 }

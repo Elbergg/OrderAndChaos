@@ -4,6 +4,9 @@
 #pragma once
 #include <cstring>
 #include "Minimax.h"
+#define END 1
+#define HEURISTIC 2
+
 
 struct EndInfo {
     bool over;
@@ -35,10 +38,10 @@ public:
         isFinished = checkIfFinished().over;
     }
     EndInfo checkIfFinished();
-    EndInfo checkColumn(int x);
-    EndInfo checkRow(int y);
-    EndInfo checkAcrossLeft(int y_beg, int y_end, int x);
-    EndInfo checkAcrossRight(int y_beg, int y_end, int x);
+    EndInfo checkColumn(int x, int mode);
+    EndInfo checkRow(int y, int mode);
+    EndInfo checkAcrossLeft(int y_beg, int y_end, int x, int mode);
+    EndInfo checkAcrossRight(int y_beg, int y_end, int x, int mode);
     EndInfo checkChaos();
 };
 
