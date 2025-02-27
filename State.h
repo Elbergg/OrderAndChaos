@@ -4,6 +4,7 @@
 #pragma once
 #include <cstring>
 #include "Minimax.h"
+#include <vector>
 #define END 1
 #define HEURISTIC 2
 
@@ -26,6 +27,8 @@ public:
     State randomMove();
     State expertMove();
     int heuristic();
+    std::vector<State> getSuccesors();
+    std::vector<Cords> getSuccCords();
     State() {
         std::memset(board, 0, sizeof(board));
         player = 1;

@@ -27,8 +27,14 @@ State State::randomMove()
 State State::expertMove()
 {
     Minimax minimax;
-    Cords result = minimax.AlphaBeta();
-    return makeMove(result.y, result.x, 2);
+    std::vector<Cords> cords= getSuccCords();
+    std::vector<State> succs = getSuccesors();
+    std::vector<int> results;
+    for (auto succ: succs)
+    {
+        results.append(succ.heuristic());
+    }
+
 }
 
 
@@ -173,6 +179,39 @@ EndInfo State::checkAcrossRight(int y_beg, int y_end, int x, int mode=END)
     }
     return EndInfo{false,0,0,0,0,0};
 }
+
+std::vector<State> State::getSuccesors()
+{
+    std::vector<State> succesors;
+    for (int y = 0; y < 6; y++)
+    {
+        for (int x = 0; x < 6; x++)
+        {
+            if (board[y][x] == 0)
+            {
+                succesors.push_back(this->makeMove(y,x,player));
+            }
+        }
+    }
+    return succesors;
+}
+
+std::vector<Cords> State::getSuccCords()
+{
+    std::vector<Cords> succesors;
+    for (int y = 0; y < 6; y++)
+    {
+        for (int x = 0; x < 6; x++)
+        {
+            if (board[y][x] == 0)
+            {
+                succesors.push_back(Cords{y,x});
+            }
+        }
+    }
+    return succesors;
+}
+
 
 int State::heuristic()
 {
