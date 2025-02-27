@@ -84,7 +84,7 @@ void GameUI::showMenu(int mode, int who)
             if (drop == 1) {
                 EndDrawing();
                 CloseWindow();
-                RunGame(RANDOM);
+                RunGame(EXPERT);
             }
             if (drop == 2) {
                 EndDrawing();

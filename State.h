@@ -3,7 +3,6 @@
 //
 #pragma once
 #include <cstring>
-#include "Minimax.h"
 #include <vector>
 #define END 1
 #define HEURISTIC 2
@@ -16,6 +15,11 @@ struct EndInfo {
     int start_y;
     int end_y;
     int who;
+};
+struct Cords
+{
+    int y;
+    int x;
 };
 
 class State {
@@ -41,10 +45,10 @@ public:
         isFinished = checkIfFinished().over;
     }
     EndInfo checkIfFinished();
-    EndInfo checkColumn(int x, int mode);
-    EndInfo checkRow(int y, int mode);
-    EndInfo checkAcrossLeft(int y_beg, int y_end, int x, int mode);
-    EndInfo checkAcrossRight(int y_beg, int y_end, int x, int mode);
+    EndInfo checkColumn(int x, int mode=END);
+    EndInfo checkRow(int y, int mode=END);
+    EndInfo checkAcrossLeft(int y_beg, int y_end, int x, int mode=END);
+    EndInfo checkAcrossRight(int y_beg, int y_end, int x, int mode=END);
     EndInfo checkChaos();
 };
 

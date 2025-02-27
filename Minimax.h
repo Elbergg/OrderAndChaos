@@ -1,16 +1,12 @@
 //
 // Created by tomek on 2/26/25.
 //
-
+#pragma once
 #ifndef MINIMAX_H
 #define MINIMAX_H
 #include "State.h"
 
-struct Cords
-{
-    int y;
-    int x;
-};
+
 
 class Minimax {
 public:

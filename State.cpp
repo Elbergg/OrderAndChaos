@@ -3,7 +3,7 @@
 //
 
 #include "State.h"
-
+#include "Minimax.h"
 #include <cstdlib>
 
 
@@ -32,9 +32,19 @@ State State::expertMove()
     std::vector<int> results;
     for (auto succ: succs)
     {
-        results.append(succ.heuristic());
+        results.push_back(minimax.AlphaBeta(succ, 3, -100000, 100000));
     }
-
+    int smallest = 0;
+    int idx = 0;
+    for (int i = 0; i < results.size(); i++)
+    {
+        if (results[i] < smallest)
+        {
+            smallest = results[i];
+            idx = i;
+        }
+    }
+    return makeMove(cords[idx].y, cords[idx].x, 2);
 }
 
 
@@ -83,7 +93,7 @@ EndInfo State::checkChaos() {
 }
 
 
-EndInfo State::checkColumn(int x, int mode=END) {
+EndInfo State::checkColumn(int x, int mode) {
     int count = 0;
     int hcount = 0;
     for (int i = 0; i < 6; i++) {
@@ -106,7 +116,7 @@ EndInfo State::checkColumn(int x, int mode=END) {
 }
 
 
- EndInfo State::checkRow(int y, int mode=END) {
+ EndInfo State::checkRow(int y, int mode) {
     int count = 0;
     int hcount = 0;
     for (int i = 0; i < 6; i++) {
@@ -128,7 +138,7 @@ EndInfo State::checkColumn(int x, int mode=END) {
     return EndInfo{false, 0, 0, 0, 0, 0};
 }
 
-EndInfo State::checkAcrossLeft(int y_beg, int y_end, int x, int mode = END)
+EndInfo State::checkAcrossLeft(int y_beg, int y_end, int x, int mode)
 {
     int count = 0;
     int hcount = 0;
@@ -154,7 +164,7 @@ EndInfo State::checkAcrossLeft(int y_beg, int y_end, int x, int mode = END)
     return EndInfo{false,0,0,0,0,0};
 }
 
-EndInfo State::checkAcrossRight(int y_beg, int y_end, int x, int mode=END)
+EndInfo State::checkAcrossRight(int y_beg, int y_end, int x, int mode)
 {
     int count = 0;
     int hcount = 0;
@@ -217,14 +227,14 @@ int State::heuristic()
 {
     int count = 0;
     for (int x = 0; x < 6; x++) {
-        count += checkRow(x).start_x;
-        count += checkColumn(x).start_x;
+        count += checkRow(x, HEURISTIC).start_x;
+        count += checkColumn(x, HEURISTIC).start_x;
     }
-    count += this->checkAcrossLeft(0,6,0).start_x;
-    count += this->checkAcrossLeft(0,5,1).start_x;
-    count += this->checkAcrossLeft(1,6,0).start_x;
-    count += this->checkAcrossRight(4,0,0).start_x;
-    count += this->checkAcrossRight(5,0,0).start_x;
-    count += this->checkAcrossRight(5,0,1).start_x;
+    count += this->checkAcrossLeft(0,6,0, HEURISTIC).start_x;
+    count += this->checkAcrossLeft(0,5,1, HEURISTIC).start_x;
+    count += this->checkAcrossLeft(1,6,0, HEURISTIC).start_x;
+    count += this->checkAcrossRight(4,0,0, HEURISTIC).start_x;
+    count += this->checkAcrossRight(5,0,0, HEURISTIC).start_x;
+    count += this->checkAcrossRight(5,0,1, HEURISTIC).start_x;
     return count;
 }
