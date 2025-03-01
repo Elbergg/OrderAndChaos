@@ -155,7 +155,7 @@ EndInfo State::checkAcrossTopBottom(int y_beg, int y_end, int x, int mode)
     int yhcount = 0;
     unsigned char curr = 0;
     int j = x;
-    for (int i = y_beg; i < y_end; i++)
+    for (int i = y_beg; i <= y_end; i++)
     {
         if (board[i][j] == curr && curr != 0) {
             count++;

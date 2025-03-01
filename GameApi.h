@@ -2,6 +2,8 @@
 // Created by tomps on 17/02/2025.
 //
 #pragma once
+#include <algorithm>
+
 #include "State.h"
 #define PVP 1
 #define RANDOM 2
@@ -20,7 +22,13 @@ public:
     {
         state = State();
     }
-
+    GameApi& operator=(GameApi&& other) noexcept {
+        this->state = other.state;
+        if (this != &other) {
+            this->bot = std::move(other.bot);
+        }
+        return *this;
+    }
     void makeMove(int y, int x, int val);
     void makeEnemyMove();
     void randomMove();
