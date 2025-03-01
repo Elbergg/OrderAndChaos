@@ -4,14 +4,15 @@
 #pragma once
 #ifndef MINIMAX_H
 #define MINIMAX_H
-#include "State.h"
+#include <vector>
+#include "Bot.h"
 
 
-
-class Minimax {
+class Minimax : public Bot{
 public:
-    int depth();
-
+    std::vector<Cords>getSuccCords(State& state);
+    std::vector<State>getSuccesors(State& state);
+    Cords move(State& state);
     int AlphaBeta(State state, int depth, int alpha, int beta);
 };
 

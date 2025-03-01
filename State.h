@@ -3,10 +3,11 @@
 //
 #pragma once
 #include <cstring>
-#include <vector>
+#include "Bot.h"
 #define END 1
 #define HEURISTIC 2
 
+class Bot;
 
 struct EndInfo {
     bool over;
@@ -30,10 +31,8 @@ public:
     bool isFinished;
     State makeMove(int y,  int x, int val);
     State randomMove();
-    State expertMove();
+    State expertMove(Bot& bot);
     int heuristic();
-    std::vector<State> getSuccesors();
-    std::vector<Cords> getSuccCords();
     State() {
         std::memset(board, 0, sizeof(board));
         player = 1;

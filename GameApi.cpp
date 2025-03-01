@@ -16,7 +16,7 @@ void GameApi::randomMove()
 }
 void GameApi::expertMove()
 {
-   state = state.expertMove();
+   state = state.expertMove(bot);
 }
 
 

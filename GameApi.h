@@ -15,9 +15,12 @@ class GameApi {
 public:
     State state;
     int mode;
-    GameApi() {
+    Bot& bot;
+    GameApi(Bot& enemy): bot(enemy)
+    {
         state = State();
     }
+
     void makeMove(int y, int x, int val);
     void makeEnemyMove();
     void randomMove();

@@ -28,27 +28,10 @@ State State::randomMove()
     return makeMove(y,x,distrib(gen));
 }
 
-State State::expertMove()
+State State::expertMove(Bot& bot)
 {
-    Minimax minimax;
-    std::vector<Cords> cords= getSuccCords();
-    std::vector<State> succs = getSuccesors();
-    std::vector<int> results;
-    for (auto succ: succs)
-    {
-        results.push_back(minimax.AlphaBeta(succ, 3, -100000, 100000));
-    }
-    int smallest = 100000000;
-    int idx = 0;
-    for (int i = 0; i < results.size(); i++)
-    {
-        if (results[i] < smallest)
-        {
-            smallest = results[i];
-            idx = i;
-        }
-    }
-    return makeMove(cords[idx].y, cords[idx].x, cords[idx].val);
+    Cords cords = bot.move(*this);
+    return makeMove(cords.y, cords.x, cords.val);
 }
 
 
@@ -209,7 +192,7 @@ EndInfo State::checkAcrossBottomTop(int y_beg, int y_end, int x, int mode)
     int yhcount = 0;
     unsigned char curr = 0;
     int j = x;
-    for (int i = y_beg; i > y_end; i--)
+    for (int i = y_beg; i >= y_end; i--)
     {
         if (board[i][j] == curr && curr != 0)
             {
@@ -237,40 +220,6 @@ EndInfo State::checkAcrossBottomTop(int y_beg, int y_end, int x, int mode)
         return EndInfo{false, hcount, 0, 0, 0, 0};
     }
     return EndInfo{false,0,0,0,0,0};
-}
-
-std::vector<State> State::getSuccesors()
-{
-    std::vector<State> succesors;
-    for (int y = 0; y < 6; y++)
-    {
-        for (int x = 0; x < 6; x++)
-        {
-            if (board[y][x] == 0)
-            {
-                succesors.push_back(this->makeMove(y,x,1));
-                succesors.push_back(this->makeMove(y,x,2));
-            }
-        }
-    }
-    return succesors;
-}
-
-std::vector<Cords> State::getSuccCords()
-{
-    std::vector<Cords> succesors;
-    for (int y = 0; y < 6; y++)
-    {
-        for (int x = 0; x < 6; x++)
-        {
-            if (board[y][x] == 0)
-            {
-                succesors.push_back(Cords{y,x, 1});
-                succesors.push_back(Cords{y,x, 2});
-            }
-        }
-    }
-    return succesors;
 }
 
 

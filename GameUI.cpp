@@ -29,7 +29,7 @@ void GameUI::showMenu(int mode, int who)
     InitWindow(600,400, "OrderAndChaosMenu");
     SetTargetFPS(60);
     if (mode==NEXT) {
-        this->Api = GameApi();
+        this->Api = GameApi(this->Api.bot);
         GuiLoadStyleDefault();
         Font defaultFont = GetFontDefault();
         GuiSetFont(defaultFont);
@@ -120,9 +120,9 @@ void GameUI::RunGame(int mode)
         if (mode != PVP && Api.state.player == 2)
             Api.makeEnemyMove();
         this->drawTiles(Api.state.board);
-        EndInfo check = isEnd();
-        if (check.over)
+        if (Api.state.isFinished)
         {
+            EndInfo check = isEnd();
             EndDrawing();
             BeginDrawing();
             drawTiles(Api.state.board);
