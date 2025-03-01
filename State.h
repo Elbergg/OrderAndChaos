@@ -20,6 +20,7 @@ struct Cords
 {
     int y;
     int x;
+    int val;
 };
 
 class State {
@@ -27,7 +28,7 @@ public:
     char board[6][6]{};
     int player;
     bool isFinished;
-    State makeMove(int y,  int x, int player);
+    State makeMove(int y,  int x, int val);
     State randomMove();
     State expertMove();
     int heuristic();
@@ -38,17 +39,17 @@ public:
         player = 1;
         isFinished = false;
     }
-    State(char brd[6][6], int player, int x, int y) {
+    State(char brd[6][6], int val, int x, int y, int plr) {
         std::memcpy(board, brd, sizeof(board));
-        board[x][y] = player;
-        this->player = (player == 1) ? 2 : 1;
+        board[x][y] = val;
+        this->player = (plr == 1) ? 2 : 1;
         isFinished = checkIfFinished().over;
     }
     EndInfo checkIfFinished();
     EndInfo checkColumn(int x, int mode=END);
     EndInfo checkRow(int y, int mode=END);
-    EndInfo checkAcrossLeft(int y_beg, int y_end, int x, int mode=END);
-    EndInfo checkAcrossRight(int y_beg, int y_end, int x, int mode=END);
+    EndInfo checkAcrossTopBottom(int y_beg, int y_end, int x, int mode=END);
+    EndInfo checkAcrossBottomTop(int y_beg, int y_end, int x, int mode=END);
     EndInfo checkChaos();
 };
 

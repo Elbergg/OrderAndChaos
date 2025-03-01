@@ -6,6 +6,8 @@
 #define PVP 1
 #define RANDOM 2
 #define EXPERT 3
+#define X_mark 1
+#define O_mark 2
 
 
 
@@ -16,7 +18,7 @@ public:
     GameApi() {
         state = State();
     }
-    void makeMove(int y, int x, int player);
+    void makeMove(int y, int x, int val);
     void makeEnemyMove();
     void randomMove();
     void expertMove();

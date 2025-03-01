@@ -5,10 +5,11 @@
 #include "State.h"
 #include "Minimax.h"
 #include <cstdlib>
+#include <random>
 
 
-State State::makeMove(int y,int x, int player) {
-    State newState = State(board, player, y, x);
+State State::makeMove(int y,int x, int val) {
+    State newState = State(board, val, y, x, this->player);
     return newState;
 }
 
@@ -21,7 +22,10 @@ State State::randomMove()
         y = rand()%6;
         x = rand()%6;
     }
-    return makeMove(y,x,2);
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(1,2);
+    return makeMove(y,x,distrib(gen));
 }
 
 State State::expertMove()
@@ -32,7 +36,7 @@ State State::expertMove()
     std::vector<int> results;
     for (auto succ: succs)
     {
-        results.push_back(minimax.AlphaBeta(succ, 2, -100000, 100000));
+        results.push_back(minimax.AlphaBeta(succ, 3, -100000, 100000));
     }
     int smallest = 100000000;
     int idx = 0;
@@ -44,7 +48,7 @@ State State::expertMove()
             idx = i;
         }
     }
-    return makeMove(cords[idx].y, cords[idx].x, 2);
+    return makeMove(cords[idx].y, cords[idx].x, cords[idx].val);
 }
 
 
@@ -58,22 +62,22 @@ EndInfo State::checkIfFinished() {
         if (check.over)
             return check;
     }
-    check = this->checkAcrossLeft(0,6,0);
+    check = this->checkAcrossTopBottom(0,6,0);
     if (check.over)
         return check;
-    check = this->checkAcrossLeft(0,5,1);
+    check = this->checkAcrossTopBottom(0,5,1);
     if (check.over)
         return check;
-    check = this->checkAcrossLeft(1,6,0);
+    check = this->checkAcrossTopBottom(1,6,0);
     if (check.over)
         return check;
-    check = this->checkAcrossRight(4,0,0);
+    check = this->checkAcrossBottomTop(4,0,0);
     if (check.over)
         return check;
-    check = this->checkAcrossRight(5,0,0);
+    check = this->checkAcrossBottomTop(5,0,0);
     if (check.over)
         return check;
-    check = this->checkAcrossRight(5,0,1);
+    check = this->checkAcrossBottomTop(5,0,1);
     if (check.over)
         return check;
     check = this->checkChaos();
@@ -95,14 +99,22 @@ EndInfo State::checkChaos() {
 
 EndInfo State::checkColumn(int x, int mode) {
     int count = 0;
-    int hcount = 0;
+    unsigned char curr = 0;
+    int hcount;
+    int xhcount = 0;
+    int yhcount = 0;
     for (int i = 0; i < 6; i++) {
-        if (board[i][x] == 1) {
+        if (board[i][x] == curr && curr != 0) {
             count++;
-            hcount++;
+            if (curr == 1)
+                xhcount++;
+            else
+                yhcount++;
         }
-        else {
-            count = 0;
+        else
+        {
+            count = 1;
+            curr = board[i][x];
         }
         if (count == 5 && mode == END)
             return EndInfo{true, x, x, i-4, i, 1};
@@ -111,6 +123,7 @@ EndInfo State::checkColumn(int x, int mode) {
     }
     if (mode == HEURISTIC)
     {
+        hcount = std::max(xhcount, yhcount);
         hcount = hcount*  hcount;
         return EndInfo{false, hcount, 0, 0, 0, 0};
     }
@@ -120,14 +133,22 @@ EndInfo State::checkColumn(int x, int mode) {
 
  EndInfo State::checkRow(int y, int mode) {
     int count = 0;
-    int hcount = 0;
+    int xhcount = 0;
+    int yhcount = 0;
+    int hcount;
+    unsigned char curr = 0;
     for (int i = 0; i < 6; i++) {
-        if (board[y][i] == 1) {
+        if (board[y][i] == curr && curr != 0) {
             count++;
-            hcount++;
+            if (curr == 1)
+                xhcount++;
+            else
+                yhcount++;
         }
-        else {
-            count = 0;
+        else
+        {
+            count = 1;
+            curr = board[y][i];
         }
         if (count == 5 && mode == END)
             return EndInfo{true, i-4, i, y, y, 1};
@@ -136,25 +157,34 @@ EndInfo State::checkColumn(int x, int mode) {
     }
     if (mode == HEURISTIC)
     {
+        hcount = std::max(xhcount, yhcount);
         hcount = hcount * hcount;
         return EndInfo{false, hcount, 0, 0, 0,0};
     }
     return EndInfo{false, 0, 0, 0, 0, 0};
 }
 
-EndInfo State::checkAcrossLeft(int y_beg, int y_end, int x, int mode)
+EndInfo State::checkAcrossTopBottom(int y_beg, int y_end, int x, int mode)
 {
     int count = 0;
-    int hcount = 0;
+    int hcount;
+    int xhcount = 0;
+    int yhcount = 0;
+    unsigned char curr = 0;
     int j = x;
     for (int i = y_beg; i < y_end; i++)
     {
-        if (board[i][j] == 1) {
+        if (board[i][j] == curr && curr != 0) {
             count++;
-            hcount++;
+            if (curr == 1)
+                xhcount++;
+            else
+                yhcount++;
         }
-        else {
-            count = 0;
+        else
+        {
+            count = 1;
+            curr = board[i][j];
         }
         if (count == 5 && mode == END)
             return EndInfo{true, j,j-4,i,i-4,1};
@@ -164,25 +194,35 @@ EndInfo State::checkAcrossLeft(int y_beg, int y_end, int x, int mode)
     }
     if (mode == HEURISTIC)
     {
+        hcount = std::max(xhcount, yhcount);
         hcount = hcount * hcount;
         return EndInfo{false, hcount, 0, 0, 0, 0};
     }
     return EndInfo{false,0,0,0,0,0};
 }
 
-EndInfo State::checkAcrossRight(int y_beg, int y_end, int x, int mode)
+EndInfo State::checkAcrossBottomTop(int y_beg, int y_end, int x, int mode)
 {
     int count = 0;
-    int hcount = 0;
+    int hcount;
+    int xhcount = 0;
+    int yhcount = 0;
+    unsigned char curr = 0;
     int j = x;
     for (int i = y_beg; i > y_end; i--)
     {
-        if (board[i][j] == 1) {
+        if (board[i][j] == curr && curr != 0)
+            {
             count++;
-            hcount++;
+            if (curr == 1)
+                xhcount++;
+            else
+                yhcount++;
         }
-        else {
-            count = 0;
+        else
+        {
+            count = 1;
+            curr = board[i][j];
         }
         if (count == 5 && mode == END)
             return EndInfo{true, j-4,j,i+4,i,1};
@@ -192,6 +232,7 @@ EndInfo State::checkAcrossRight(int y_beg, int y_end, int x, int mode)
     }
     if (mode == HEURISTIC)
     {
+        hcount = std::max(xhcount, yhcount);
         hcount = hcount * hcount;
         return EndInfo{false, hcount, 0, 0, 0, 0};
     }
@@ -207,7 +248,8 @@ std::vector<State> State::getSuccesors()
         {
             if (board[y][x] == 0)
             {
-                succesors.push_back(this->makeMove(y,x,player));
+                succesors.push_back(this->makeMove(y,x,1));
+                succesors.push_back(this->makeMove(y,x,2));
             }
         }
     }
@@ -223,7 +265,8 @@ std::vector<Cords> State::getSuccCords()
         {
             if (board[y][x] == 0)
             {
-                succesors.push_back(Cords{y,x});
+                succesors.push_back(Cords{y,x, 1});
+                succesors.push_back(Cords{y,x, 2});
             }
         }
     }
@@ -238,11 +281,11 @@ int State::heuristic()
         count += checkRow(x, HEURISTIC).start_x;
         count += checkColumn(x, HEURISTIC).start_x;
     }
-    count += this->checkAcrossLeft(0,6,0, HEURISTIC).start_x;
-    count += this->checkAcrossLeft(0,5,1, HEURISTIC).start_x;
-    count += this->checkAcrossLeft(1,6,0, HEURISTIC).start_x;
-    count += this->checkAcrossRight(4,0,0, HEURISTIC).start_x;
-    count += this->checkAcrossRight(5,0,0, HEURISTIC).start_x;
-    count += this->checkAcrossRight(5,0,1, HEURISTIC).start_x;
+    count += this->checkAcrossTopBottom(0,6,0, HEURISTIC).start_x;
+    count += this->checkAcrossTopBottom(0,5,1, HEURISTIC).start_x;
+    count += this->checkAcrossTopBottom(1,6,0, HEURISTIC).start_x;
+    count += this->checkAcrossBottomTop(4,0,0, HEURISTIC).start_x;
+    count += this->checkAcrossBottomTop(5,0,0, HEURISTIC).start_x;
+    count += this->checkAcrossBottomTop(5,0,1, HEURISTIC).start_x;
     return count;
 }

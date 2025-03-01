@@ -81,15 +81,18 @@ void GameUI::showMenu(int mode, int who)
                       (float) GetScreenWidth() * 4 / 7, (float) GetScreenHeight() * 2 / 5,
                       (float) GetScreenWidth() * 2 / 7, (float) GetScreenHeight() / 7
                   }, "Random;Expert", &i, true);
-            if (drop == 1) {
-                EndDrawing();
-                CloseWindow();
-                RunGame(EXPERT);
-            }
-            if (drop == 2) {
-                EndDrawing();
-                CloseWindow();
-                RunGame(EXPERT);
+            if (drop)
+            {
+                if (i == 0) {
+                    EndDrawing();
+                    CloseWindow();
+                    RunGame(RANDOM);
+                }
+                if (i == 1) {
+                    EndDrawing();
+                    CloseWindow();
+                    RunGame(EXPERT);
+                }
             }
         }
         EndDrawing();
@@ -187,17 +190,18 @@ void GameUI::drawEndLine(EndInfo check)
 
 void GameUI::checkForClicks()
 {
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON || IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))){
         int x = GetMouseX()/(float)(windowWidth/6);
         int y = GetMouseY()/(float)(windowHeight/6);
         if (Api.state.board[y][x]!=0)
             return;
         if (x >= 0 && y >= 0 && x <=5 && y<=5) {
-            Api.makeMove(y,x,Api.state.player);
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+                Api.makeMove(y,x,X_mark);
+            else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
+                Api.makeMove(y,x,O_mark);
         }
-
     }
-
 }
 
 

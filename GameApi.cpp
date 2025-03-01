@@ -5,9 +5,9 @@
 #include "GameApi.h"
 #include "State.h"
 
-void GameApi::makeMove(int y, int x, int player)
+void GameApi::makeMove(int y, int x, int val)
 {
-   state = state.makeMove(y,x,player);
+   state = state.makeMove(y,x,val);
 }
 
 void GameApi::randomMove()
