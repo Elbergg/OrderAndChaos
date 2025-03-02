@@ -36,6 +36,9 @@ void GameUI::showMenu(int mode, int who)
     }
     int pvp = 0;
     int pve = 0;
+    int side1 = 0;
+    int side2 = 0;
+    bool first = true;
     while (!WindowShouldClose())
     {
         BeginDrawing();
@@ -44,13 +47,13 @@ void GameUI::showMenu(int mode, int who)
         if (mode==NEXT)
         {
             if (who==1)
-                GuiLabel(Rectangle{(float)GetScreenWidth()/6, (float)GetScreenHeight()/6,(float)GetScreenWidth()*2/3, (float)GetScreenHeight()/6}, "Order won!");
+                GuiLabel(Rectangle{(float)GetScreenWidth()/6, (float)GetScreenHeight()/10,(float)GetScreenWidth()*2/3, (float)GetScreenHeight()/6}, "Order won!");
             else if (who==2)
-                GuiLabel(Rectangle{(float)GetScreenWidth()/6, (float)GetScreenHeight()/6,(float)GetScreenWidth()*2/3, (float)GetScreenHeight()/6}, "Chaos won!");
+                GuiLabel(Rectangle{(float)GetScreenWidth()/6, (float)GetScreenHeight()/10,(float)GetScreenWidth()*2/3, (float)GetScreenHeight()/6}, "Chaos won!");
         }
         else
         {
-            GuiLabel(Rectangle{(float)GetScreenWidth()/6, (float)GetScreenHeight()/6,(float)GetScreenWidth()*2/3, (float)GetScreenHeight()/6}, "Welcome to order and chaos");
+            GuiLabel(Rectangle{(float)GetScreenWidth()/6, (float)GetScreenHeight()/10,(float)GetScreenWidth()*2/3, (float)GetScreenHeight()/6}, "Welcome to order and chaos");
         }
         GuiSetStyle(DEFAULT, TEXT_SIZE, 10);
         if (!pvp)
@@ -64,6 +67,22 @@ void GameUI::showMenu(int mode, int who)
                           (float) GetScreenWidth() * 4 / 7, (float) GetScreenHeight() * 2 / 5,
                           (float) GetScreenWidth() * 2 / 7, (float) GetScreenHeight() / 5
                       }, "PVE");
+        GuiSetStyle(DEFAULT, TEXT_SIZE, 14);
+        GuiLabel((Rectangle){(float)(GetScreenWidth()*4/7), (float)(GetScreenHeight()*3/10), (float)(GetScreenWidth()/7), (float)(GetScreenHeight()/12)}, "Im playing as: ");
+        GuiSetStyle(DEFAULT, TEXT_SIZE, 10);
+        // GuiComboBox((Rectangle){(float)(GetScreenWidth()*5/7), (float)(GetScreenHeight()*3/10), (float)(GetScreenWidth()/7), (float)(GetScreenHeight()/12)}, "Order;Chaos", &side);
+        if (first) {
+            side2 = GuiButton((Rectangle){(float)(GetScreenWidth()*5/7), (float)(GetScreenHeight()*3/10), (float)(GetScreenWidth()/7), (float)(GetScreenHeight()/12)}, "Order");
+            if (side2) {
+                first = false;
+            }
+        }
+        else{
+            side1 = GuiButton((Rectangle){(float)(GetScreenWidth()*5/7), (float)(GetScreenHeight()*3/10), (float)(GetScreenWidth()/7), (float)(GetScreenHeight()/12)}, "Chaos");
+            if (side1)
+                first = true;
+        }
+
         if (!pve && !pvp) {
             EndDrawing();
             continue;
