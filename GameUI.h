@@ -7,7 +7,7 @@
 #define GRID (Color){235,64,237, 255}
 #define X (Color){32, 164, 243, 255}
 #define O (Color) {252, 224, 248, 255}
-#define MENU (Color) {201, 237, 220,255}
+#define MENU (Color) {201, 237, 220,10}
 #define RANDOMCOLOR Color{static_cast<unsigned char>(rand()% 256),static_cast<unsigned char>(rand()%256),static_cast<unsigned char>(rand()%256),255}
 
 class GameUI {
@@ -29,6 +29,7 @@ public:
     void checkForClicks();
     void drawEndLine(EndInfo check);
     void drawRectangles();
+    void showTurnPopup();
     EndInfo isEnd();
 };
 

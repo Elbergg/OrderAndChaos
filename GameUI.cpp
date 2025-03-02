@@ -115,17 +115,19 @@ void GameUI::RunGame(int mode)
         ClearBackground(BACKGROUND);
         windowWidth = GetScreenWidth();
         windowHeight = GetScreenHeight();
-        this->drawGrids();
+        drawGrids();
         checkForClicks();
         if (mode != PVP && Api.state.player == 2)
             Api.makeEnemyMove();
-        this->drawTiles(Api.state.board);
+        drawTiles(Api.state.board);
+        showTurnPopup();
         if (Api.state.isFinished)
         {
             EndInfo check = isEnd();
             EndDrawing();
             BeginDrawing();
             drawTiles(Api.state.board);
+            showTurnPopup();
             EndDrawing();
             if (check.who == 1) {
                 drawEndLine(check);
@@ -197,11 +199,32 @@ void GameUI::checkForClicks()
             return;
         if (x >= 0 && y >= 0 && x <=5 && y<=5) {
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
                 Api.makeMove(y,x,X_mark);
-            else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
+            }
+            else if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON))
+            {
                 Api.makeMove(y,x,O_mark);
+            }
         }
     }
+}
+
+
+void GameUI::showTurnPopup()
+{
+    int twidth = windowWidth/3;
+    int theight = windowHeight/24;
+    const char* text = "grrr";
+    if (Api.state.player == 1)
+        text = "Order's turn";
+    else
+        text = "Chaos's turn";
+    GuiLoadStyleDefault();
+    Font defaultFont = GetFontDefault();
+    GuiSetFont(defaultFont);
+    GuiSetStyle(DEFAULT, TEXT_SIZE, 10);
+    GuiButton((Rectangle){(float)(windowWidth-twidth), 0.0f, (float)(twidth), (float)(theight)}, text);
 }
 
 
