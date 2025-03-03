@@ -12,26 +12,38 @@
 
 class GameUI {
 public:
-    int windowWidth;
-    int windowHeight;
-    GameApi& Api;
-    GameUI(int width, int height, GameApi& api) : Api(api) {
+    GameUI(int width, int height, int mWidth, int mHeight, GameApi& api) : Api(api) {
         windowWidth = width;
         windowHeight = height;
+        menuWidth = mWidth;
+        menuHeight = mHeight;
     }
-    void Run();
-    void RunGame(int mode, bool order);
+    void run();
+private:
+    int windowWidth;
+    int windowHeight;
+    int menuWidth;
+    int menuHeight;
+    GameApi& Api;
+    void runGame(const int& mode, bool order);
     void showMenu(int mode, int who);
-    void drawGrids();
-    void drawTiles(char board[6][6]);
-    void drawX(int y, int x);
-    void drawO(int y, int x);
-    void checkForClicks();
-    void InitBoard();
-    void drawEndLine(EndInfo check);
-    void drawRectangles();
-    void showTurnPopup();
-    EndInfo isEnd();
+    void drawGrids() const;
+    void drawTiles(char board[6][6]) const;
+    void drawX(int y, int x) const;
+    void drawO(int y, int x) const;
+    void checkForClicks() const;
+    void initBoard();
+    void playerAsOrder();
+    void playerAsChaos();
+    void drawEndLine(const EndInfo &check) const;
+    void drawRectangles() const;
+    void showTurnPopup() const;
+    void StartProcedure() const;
+    void reloadMenu() const;
+    static void displayWhoWonInfo(const int& who);
+    static void handleSideButton(bool& first);
+    void showDifficulty(bool first);
+    EndInfo isEnd() const;
 };
 
 

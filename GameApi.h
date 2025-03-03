@@ -15,24 +15,24 @@
 
 class GameApi {
 public:
-    State state;
-    int mode;
-    Bot& bot;
-    GameApi(Bot& enemy): bot(enemy)
+    explicit GameApi(Bot& enemy): bot(enemy)
     {
         state = State();
     }
     GameApi& operator=(GameApi&& other) noexcept {
         this->state = other.state;
         if (this != &other) {
-            this->bot = std::move(other.bot);
+            this->bot = other.bot;
         }
         return *this;
     }
+    Bot& bot;
+    State state;
     void makeMove(int y, int x, int val);
     void makeEnemyMove(bool order);
     void randomMove();
     void expertMove(bool order);
+    int mode{};
     EndInfo isEnd();
 };
 

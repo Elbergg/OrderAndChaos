@@ -26,13 +26,6 @@ struct Cords
 
 class State {
 public:
-    char board[6][6]{};
-    int player;
-    bool isFinished;
-    State makeMove(int y,  int x, int val);
-    State randomMove();
-    State expertMove(Bot& bot, bool order);
-    int heuristic();
     State() {
         std::memset(board, 0, sizeof(board));
         player = 1;
@@ -44,7 +37,15 @@ public:
         this->player = (plr == 1) ? 2 : 1;
         isFinished = checkIfFinished().over;
     }
+    State makeMove(int y,  int x, int val);
+    State randomMove();
+    State expertMove(Bot& bot, bool order);
     EndInfo checkIfFinished();
+    char board[6][6]{};
+    int player;
+    bool isFinished;
+    int heuristic();
+private:
     EndInfo checkColumn(int x, int mode=END);
     EndInfo checkRow(int y, int mode=END);
     EndInfo checkAcrossTopBottom(int y_beg, int y_end, int x, int mode=END);

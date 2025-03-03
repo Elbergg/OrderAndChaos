@@ -9,7 +9,7 @@
 
 
 State State::makeMove(int y,int x, int val) {
-    State newState = State(board, val, y, x, this->player);
+    const State newState = State(board, val, y, x, this->player);
     return newState;
 }
 
@@ -45,13 +45,13 @@ EndInfo State::checkIfFinished() {
         if (check.over)
             return check;
     }
-    check = this->checkAcrossTopBottom(0,6,0);
+    check = this->checkAcrossTopBottom(0,5,0);
     if (check.over)
         return check;
-    check = this->checkAcrossTopBottom(0,5,1);
+    check = this->checkAcrossTopBottom(0,4,1);
     if (check.over)
         return check;
-    check = this->checkAcrossTopBottom(1,6,0);
+    check = this->checkAcrossTopBottom(1,5,0);
     if (check.over)
         return check;
     check = this->checkAcrossBottomTop(4,0,0);
@@ -60,7 +60,7 @@ EndInfo State::checkIfFinished() {
     check = this->checkAcrossBottomTop(5,0,0);
     if (check.over)
         return check;
-    check = this->checkAcrossBottomTop(5,0,1);
+    check = this->checkAcrossBottomTop(5,1,1);
     if (check.over)
         return check;
     check = this->checkChaos();
@@ -79,11 +79,16 @@ EndInfo State::checkChaos() {
     return EndInfo{true,0,0,0,0, 2};
 }
 
+EndInfo returnHeuristicInfo(const int& xhcount, const int&yhcount)
+{
+    int hcount = std::max(xhcount, yhcount);
+    hcount = hcount * hcount * hcount;
+    return EndInfo{false, hcount, 0, 0, 0,0};
+}
 
 EndInfo State::checkColumn(int x, int mode) {
     int count = 0;
     unsigned char curr = 0;
-    int hcount;
     int xhcount = 0;
     int yhcount = 0;
     for (int i = 0; i < 6; i++) {
@@ -102,13 +107,11 @@ EndInfo State::checkColumn(int x, int mode) {
         if (count == 5 && mode == END)
             return EndInfo{true, x, x, i-4, i, 1};
         if (count == 5 && mode == HEURISTIC)
-            return EndInfo{false, 999, 0, 0,0,0};
+            return EndInfo{false, 5000, 0, 0,0,0};
     }
     if (mode == HEURISTIC)
     {
-        hcount = std::max(xhcount, yhcount);
-        hcount = hcount*  hcount;
-        return EndInfo{false, hcount, 0, 0, 0, 0};
+        return returnHeuristicInfo(xhcount,yhcount);
     }
     return EndInfo{false, 0, 0, 0, 0, 0};
 }
@@ -118,7 +121,6 @@ EndInfo State::checkColumn(int x, int mode) {
     int count = 0;
     int xhcount = 0;
     int yhcount = 0;
-    int hcount;
     unsigned char curr = 0;
     for (int i = 0; i < 6; i++) {
         if (board[y][i] == curr && curr != 0) {
@@ -136,13 +138,11 @@ EndInfo State::checkColumn(int x, int mode) {
         if (count == 5 && mode == END)
             return EndInfo{true, i-4, i, y, y, 1};
         if (count == 5 && mode == HEURISTIC)
-            return EndInfo{false, 999, 0, 0,0,0};
+            return EndInfo{false, 5000, 0, 0,0,0};
     }
     if (mode == HEURISTIC)
     {
-        hcount = std::max(xhcount, yhcount);
-        hcount = hcount * hcount;
-        return EndInfo{false, hcount, 0, 0, 0,0};
+        return returnHeuristicInfo(xhcount,yhcount);
     }
     return EndInfo{false, 0, 0, 0, 0, 0};
 }
@@ -150,7 +150,6 @@ EndInfo State::checkColumn(int x, int mode) {
 EndInfo State::checkAcrossTopBottom(int y_beg, int y_end, int x, int mode)
 {
     int count = 0;
-    int hcount;
     int xhcount = 0;
     int yhcount = 0;
     unsigned char curr = 0;
@@ -172,14 +171,12 @@ EndInfo State::checkAcrossTopBottom(int y_beg, int y_end, int x, int mode)
         if (count == 5 && mode == END)
             return EndInfo{true, j,j-4,i,i-4,1};
         if (count == 5 && mode == HEURISTIC)
-            return EndInfo{false, 999, 0, 0,0,0};
+            return EndInfo{false, 5000, 0, 0,0,0};
         j++;
     }
     if (mode == HEURISTIC)
     {
-        hcount = std::max(xhcount, yhcount);
-        hcount = hcount * hcount;
-        return EndInfo{false, hcount, 0, 0, 0, 0};
+        return returnHeuristicInfo(xhcount,yhcount);
     }
     return EndInfo{false,0,0,0,0,0};
 }
@@ -187,7 +184,6 @@ EndInfo State::checkAcrossTopBottom(int y_beg, int y_end, int x, int mode)
 EndInfo State::checkAcrossBottomTop(int y_beg, int y_end, int x, int mode)
 {
     int count = 0;
-    int hcount;
     int xhcount = 0;
     int yhcount = 0;
     unsigned char curr = 0;
@@ -210,14 +206,12 @@ EndInfo State::checkAcrossBottomTop(int y_beg, int y_end, int x, int mode)
         if (count == 5 && mode == END)
             return EndInfo{true, j-4,j,i+4,i,1};
         if (count == 5 && mode == HEURISTIC)
-            return EndInfo{false, 999, 0, 0,0,0};
+            return EndInfo{false, 5000, 0, 0,0,0};
         j++;
     }
     if (mode == HEURISTIC)
     {
-        hcount = std::max(xhcount, yhcount);
-        hcount = hcount * hcount;
-        return EndInfo{false, hcount, 0, 0, 0, 0};
+        return returnHeuristicInfo(xhcount,yhcount);
     }
     return EndInfo{false,0,0,0,0,0};
 }
@@ -230,11 +224,11 @@ int State::heuristic()
         count += checkRow(x, HEURISTIC).start_x;
         count += checkColumn(x, HEURISTIC).start_x;
     }
-    count += this->checkAcrossTopBottom(0,6,0, HEURISTIC).start_x;
-    count += this->checkAcrossTopBottom(0,5,1, HEURISTIC).start_x;
-    count += this->checkAcrossTopBottom(1,6,0, HEURISTIC).start_x;
+    count += this->checkAcrossTopBottom(0,5,0, HEURISTIC).start_x;
+    count += this->checkAcrossTopBottom(0,4,1, HEURISTIC).start_x;
+    count += this->checkAcrossTopBottom(1,5,0, HEURISTIC).start_x;
     count += this->checkAcrossBottomTop(4,0,0, HEURISTIC).start_x;
     count += this->checkAcrossBottomTop(5,0,0, HEURISTIC).start_x;
-    count += this->checkAcrossBottomTop(5,0,1, HEURISTIC).start_x;
+    count += this->checkAcrossBottomTop(5,1,1, HEURISTIC).start_x;
     return count;
 }
