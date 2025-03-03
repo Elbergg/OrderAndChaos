@@ -28,7 +28,7 @@ private:
     void runGame(const int& mode, bool order);
     void showMenu(int mode, int who);
     void drawGrids() const;
-    void drawTiles(char board[6][6]);
+    void drawTiles(char board[6][6]) const;
     void drawX(int y, int x) const;
     void drawO(int y, int x) const;
     void checkForClicks() const;
@@ -36,12 +36,12 @@ private:
     void playerAsOrder();
     void playerAsChaos();
     void drawEndLine(const EndInfo &check) const;
-    void drawRectangles();
+    void drawRectangles() const;
     void showTurnPopup() const;
     void StartProcedure() const;
-    void reloadMenu();
-    void displayWhoWonInfo(const int& who);
-    void handleSideButton(bool& first);
+    void reloadMenu() const;
+    static void displayWhoWonInfo(const int& who);
+    static void handleSideButton(bool& first);
     void showDifficulty(bool first);
     EndInfo isEnd() const;
 };

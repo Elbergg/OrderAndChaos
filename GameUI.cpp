@@ -25,8 +25,7 @@ void GameUI::run()
 }
 
 
-void GameUI::reloadMenu()
-{
+void GameUI::reloadMenu() const {
     this->Api = GameApi(this->Api.bot);
     GuiLoadStyleDefault();
     Font defaultFont = GetFontDefault();
@@ -60,7 +59,7 @@ void GameUI::handleSideButton(bool &first)
 
 
 
-void GameUI::showMenu(int mode, int who)
+void GameUI::showMenu(const int mode, const int who)
 {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(menuWidth,menuHeight, "OrderAndChaosMenu");
@@ -136,10 +135,10 @@ void GameUI::initBoard()
     EndDrawing();
 }
 
-void GameUI::showDifficulty(bool first)
+void GameUI::showDifficulty(const bool first)
 {
     int i = -1;
-    int drop = GuiDropdownBox(Rectangle{
+    const int drop = GuiDropdownBox(Rectangle{
               (float) GetScreenWidth() * 4 / 7, (float) GetScreenHeight() * 2 / 5,
               (float) GetScreenWidth() * 2 / 7, (float) GetScreenHeight() / 7
           }, "Random;Expert", &i, true);
@@ -190,7 +189,7 @@ void GameUI::StartProcedure() const
 }
 
 
-void GameUI::runGame(const int& mode, bool order)
+void GameUI::runGame(const int& mode, const bool order)
 {
     Api.mode = mode;
     StartProcedure();
@@ -229,8 +228,7 @@ void GameUI::runGame(const int& mode, bool order)
     CloseWindow();
 }
 
-void GameUI::drawRectangles()
-{
+void GameUI::drawRectangles() const {
     std::vector<int> x_list;
     std::vector<int> y_list;
     std::vector<int> width_list;
@@ -266,10 +264,10 @@ void GameUI::drawEndLine(const EndInfo &check) const
     for (int i = 0; i< 30; i++) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         BeginDrawing();
-        int tileWidth = windowWidth/6;
-        int tileHeight = windowHeight/6;
-        int paddingWidth = windowWidth/12;
-        int paddingHeight = windowHeight/12;
+        const int tileWidth = windowWidth/6;
+        const int tileHeight = windowHeight/6;
+        const int paddingWidth = windowWidth/12;
+        const int paddingHeight = windowHeight/12;
         DrawLineEx(Vector2{(float) check.start_x*tileWidth + paddingWidth, (float) check.start_y*tileHeight + paddingHeight},
                    Vector2{(float) check.end_x*tileWidth + paddingWidth, (float) check.end_y*tileHeight + paddingHeight}, windowWidth / 30, RANDOMCOLOR);
         EndDrawing();
@@ -278,8 +276,8 @@ void GameUI::drawEndLine(const EndInfo &check) const
 
 void GameUI::checkForClicks() const
 {
-    int x = GetMouseX()/(float)(windowWidth/6);
-    int y = GetMouseY()/(float)(windowHeight/6);
+    const int x = GetMouseX()/(float)(windowWidth/6);
+    const int y = GetMouseY()/(float)(windowHeight/6);
     if (Api.state.board[y][x]!=0)
         return;
     if (x >= 0 && y >= 0 && x <=5 && y<=5) {
@@ -305,7 +303,7 @@ void GameUI::showTurnPopup() const
     else
         text = "Chaos's turn";
     GuiLoadStyleDefault();
-    Font defaultFont = GetFontDefault();
+    const Font defaultFont = GetFontDefault();
     GuiSetFont(defaultFont);
     GuiSetStyle(DEFAULT, TEXT_SIZE, (GetScreenWidth() > GetScreenHeight() ? GetScreenWidth() : GetScreenHeight())/50);
     GuiButton((Rectangle){(float)(windowWidth-twidth), 0.0f, (float)(twidth), (float)(theight)}, text);
@@ -313,7 +311,7 @@ void GameUI::showTurnPopup() const
 
 
 void GameUI::drawGrids() const {
-    float thickness = windowWidth/100;
+    const float thickness = (windowWidth > windowHeight ? windowWidth : windowHeight)/100;
     for (int i = 1; i < 6; i++) {
         DrawLineEx((Vector2){static_cast<float>(windowWidth) / 6 * i, 0},
                    (Vector2){static_cast<float>(windowWidth / 6 * i), static_cast<float>(windowHeight)},
@@ -326,11 +324,10 @@ void GameUI::drawGrids() const {
     }
 }
 
-void GameUI::drawTiles(char board[6][6]) {
+void GameUI::drawTiles(char board[6][6]) const {
     for (int i = 0; i < 6; i++) {
         for (int j = 0; j < 6; j++) {
-            char marker = board[i][j];
-            if (marker == 1) {
+            if (char marker = board[i][j]; marker == 1) {
                 this->drawX(i, j);
             }
             else if (marker == 2) {
@@ -341,8 +338,8 @@ void GameUI::drawTiles(char board[6][6]) {
 }
 void GameUI::drawX(int y, int x) const
 {
-    float padding_x = windowWidth/OFFSET;
-    float padding_y = windowHeight/OFFSET;
+    const float padding_x = windowWidth/OFFSET;
+    const float padding_y = windowHeight/OFFSET;
     DrawLineEx(
         (Vector2){(x * static_cast<float>(windowWidth) * 1 / 6 +padding_x), y * static_cast<float>(windowHeight) * 1/6 + padding_y},
         (Vector2){((x+1) * static_cast<float>(windowWidth) * 1 / 6 -padding_x), (y+1) * static_cast<float>(windowHeight) * 1/6 - padding_y},

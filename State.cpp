@@ -9,7 +9,7 @@
 
 
 State State::makeMove(int y,int x, int val) {
-    State newState = State(board, val, y, x, this->player);
+    const State newState = State(board, val, y, x, this->player);
     return newState;
 }
 
@@ -79,11 +79,16 @@ EndInfo State::checkChaos() {
     return EndInfo{true,0,0,0,0, 2};
 }
 
+EndInfo returnHeuristicInfo(const int& xhcount, const int&yhcount)
+{
+    int hcount = std::max(xhcount, yhcount);
+    hcount = hcount * hcount * hcount;
+    return EndInfo{false, hcount, 0, 0, 0,0};
+}
 
 EndInfo State::checkColumn(int x, int mode) {
     int count = 0;
     unsigned char curr = 0;
-    int hcount;
     int xhcount = 0;
     int yhcount = 0;
     for (int i = 0; i < 6; i++) {
@@ -106,9 +111,7 @@ EndInfo State::checkColumn(int x, int mode) {
     }
     if (mode == HEURISTIC)
     {
-        hcount = std::max(xhcount, yhcount);
-        hcount = hcount *  hcount * hcount;
-        return EndInfo{false, hcount, 0, 0, 0, 0};
+        return returnHeuristicInfo(xhcount,yhcount);
     }
     return EndInfo{false, 0, 0, 0, 0, 0};
 }
@@ -139,9 +142,7 @@ EndInfo State::checkColumn(int x, int mode) {
     }
     if (mode == HEURISTIC)
     {
-        int hcount = std::max(xhcount, yhcount);
-        hcount = hcount * hcount * hcount;
-        return EndInfo{false, hcount, 0, 0, 0,0};
+        return returnHeuristicInfo(xhcount,yhcount);
     }
     return EndInfo{false, 0, 0, 0, 0, 0};
 }
@@ -175,9 +176,7 @@ EndInfo State::checkAcrossTopBottom(int y_beg, int y_end, int x, int mode)
     }
     if (mode == HEURISTIC)
     {
-        int hcount = std::max(xhcount, yhcount);
-        hcount = hcount * hcount * hcount;
-        return EndInfo{false, hcount, 0, 0, 0, 0};
+        return returnHeuristicInfo(xhcount,yhcount);
     }
     return EndInfo{false,0,0,0,0,0};
 }
@@ -212,9 +211,7 @@ EndInfo State::checkAcrossBottomTop(int y_beg, int y_end, int x, int mode)
     }
     if (mode == HEURISTIC)
     {
-        int hcount = std::max(xhcount, yhcount);
-        hcount = hcount * hcount * hcount;
-        return EndInfo{false, hcount, 0, 0, 0, 0};
+        return returnHeuristicInfo(xhcount,yhcount);
     }
     return EndInfo{false,0,0,0,0,0};
 }

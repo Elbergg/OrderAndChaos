@@ -8,6 +8,8 @@
 #include <cstdlib>
 #include <random>
 
+#include "State.h"
+
 std::vector<Cords> Minimax::getSuccCords(State& state)
 {
     std::vector<Cords> succesors;
