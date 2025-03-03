@@ -150,9 +150,11 @@ void GameUI::RunGame(int mode, bool order)
         }
         else {
             if (mode != PVP && Api.state.player == 1)
+            {
                 Api.makeEnemyMove(order);
                 InitBoard();
-            checkForClicks();
+            }
+                checkForClicks();
         }
         if (Api.state.isFinished)
         {
