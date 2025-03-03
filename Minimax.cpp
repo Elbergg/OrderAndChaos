@@ -4,6 +4,10 @@
 
 #include "Minimax.h"
 
+#include <algorithm>
+#include <cstdlib>
+#include <random>
+
 std::vector<Cords> Minimax::getSuccCords(State& state)
 {
     std::vector<Cords> succesors;
@@ -43,44 +47,47 @@ Cords Minimax::move(State& state, bool order)
     std::vector<Cords> cords= getSuccCords(state);
     std::vector<State> succs = getSuccesors(state);
     std::vector<int> results;
+    std::vector<int> equals;
     for (auto succ: succs)
     {
-        results.push_back(this->AlphaBeta(succ, 3, -100000, 100000));
+        results.push_back(this->AlphaBeta(succ, 3, -10000000, 10000000));
     }
-    int idx;
     if (order)
     {
         int smallest = 100000000;
-        idx = 0;
         for (int i = 0; i < results.size(); i++)
         {
             if (results[i] < smallest)
             {
                 smallest = results[i];
-                idx = i;
+                equals = {i};
             }
+            else if (results[i] == smallest)
+                equals.push_back(i);
         }
     }
     else
     {
         int biggest = -100000000;
-        idx = 0;
         for (int i = 0; i < results.size(); i++)
         {
             if (results[i] > biggest)
             {
                 biggest = results[i];
-                idx = i;
+                equals = {i};
             }
+            else if (results[i] == biggest)
+                equals.push_back(i);
         }
     }
-    return cords[idx];
+    std::shuffle(equals.begin(), equals.end(), std::mt19937(std::random_device()()));
+    return cords[equals[0]];
 }
 
 int Minimax::AlphaBeta(State state, int depth, int alpha, int beta)
 {
     if (state.isFinished || depth == 0)
-        return state.heuristic();
+        return state.heuristic()*(depth+1);
     std::vector<State> succesors = getSuccesors(state);
     int  val;
     if (state.player == 1)

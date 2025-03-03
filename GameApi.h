@@ -15,9 +15,6 @@
 
 class GameApi {
 public:
-    State state;
-    int mode;
-    Bot& bot;
     GameApi(Bot& enemy): bot(enemy)
     {
         state = State();
@@ -29,10 +26,13 @@ public:
         }
         return *this;
     }
+    Bot& bot;
+    State state;
     void makeMove(int y, int x, int val);
     void makeEnemyMove(bool order);
     void randomMove();
     void expertMove(bool order);
+    int mode;
     EndInfo isEnd();
 };
 

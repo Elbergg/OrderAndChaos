@@ -16,21 +16,16 @@
 #define NEXT 2
 
 
-/* to do:
- * - random choice when results from alpha beta are equal
- * - make the heuristic better
- * - bug with finish out of bounds
- * - scaled text size
- */
 
 
-void GameUI::Run()
+
+void GameUI::run()
 {
     showMenu(FIRST, 0);
 }
 
 
-void GameUI::ReloadMenu()
+void GameUI::reloadMenu()
 {
     this->Api = GameApi(this->Api.bot);
     GuiLoadStyleDefault();
@@ -38,7 +33,7 @@ void GameUI::ReloadMenu()
     GuiSetFont(defaultFont);
 }
 
-void GameUI::DisplayWhoWonInfo(int const& who)
+void GameUI::displayWhoWonInfo(int const& who)
 {
     if (who==1)
         GuiLabel(Rectangle{(float)GetScreenWidth()/6, (float)GetScreenHeight()/10,(float)GetScreenWidth()*2/3, (float)GetScreenHeight()/6}, "Order won!");
@@ -47,7 +42,7 @@ void GameUI::DisplayWhoWonInfo(int const& who)
 
 }
 
-void GameUI::HandleSideButton(bool &first)
+void GameUI::handleSideButton(bool &first)
 {
     int side;
     if (first) {
@@ -68,29 +63,33 @@ void GameUI::HandleSideButton(bool &first)
 void GameUI::showMenu(int mode, int who)
 {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(600,400, "OrderAndChaosMenu");
+    InitWindow(menuWidth,menuHeight, "OrderAndChaosMenu");
     SetTargetFPS(60);
     if (mode==NEXT)
     {
-        ReloadMenu();
+        reloadMenu();
     }
     int pvp = 0;
     int pve = 0;
     bool first = true;
+    int bigger = 0;
     while (!WindowShouldClose())
     {
+        bigger =  GetScreenWidth() > GetScreenHeight() ? GetScreenWidth() : GetScreenHeight();
+        menuWidth = GetScreenWidth();
+        menuHeight = GetScreenHeight();
         BeginDrawing();
         ClearBackground(MENU);
-        GuiSetStyle(DEFAULT, TEXT_SIZE, 25);
+        GuiSetStyle(DEFAULT, TEXT_SIZE, bigger/24);
         if (mode==NEXT)
         {
-            DisplayWhoWonInfo(who);
+            displayWhoWonInfo(who);
         }
         else
         {
             GuiLabel(Rectangle{(float)GetScreenWidth()/6, (float)GetScreenHeight()/10,(float)GetScreenWidth()*2/3, (float)GetScreenHeight()/6}, "Welcome to order and chaos");
         }
-        GuiSetStyle(DEFAULT, TEXT_SIZE, 10);
+        GuiSetStyle(DEFAULT, TEXT_SIZE, bigger/60);
         if (!pvp)
             pvp = GuiButton(Rectangle{
                           (float) GetScreenWidth() / 7, (float) GetScreenHeight() * 2 / 5, (float) GetScreenWidth() * 2 / 7,
@@ -102,10 +101,10 @@ void GameUI::showMenu(int mode, int who)
                           (float) GetScreenWidth() * 4 / 7, (float) GetScreenHeight() * 2 / 5,
                           (float) GetScreenWidth() * 2 / 7, (float) GetScreenHeight() / 5
                       }, "PVE");
-        GuiSetStyle(DEFAULT, TEXT_SIZE, 14);
+        GuiSetStyle(DEFAULT, TEXT_SIZE, bigger/42);
         GuiLabel((Rectangle){(float)(GetScreenWidth()*4/7), (float)(GetScreenHeight()*3/10), (float)(GetScreenWidth()/7), (float)(GetScreenHeight()/12)}, "Im playing as: ");
-        GuiSetStyle(DEFAULT, TEXT_SIZE, 10);
-        HandleSideButton(first);
+        GuiSetStyle(DEFAULT, TEXT_SIZE, bigger/60);
+        handleSideButton(first);
         if (!pve && !pvp) {
             EndDrawing();
             continue;
@@ -114,18 +113,18 @@ void GameUI::showMenu(int mode, int who)
         {
             EndDrawing();
             CloseWindow();
-            RunGame(PVP, first);
+            runGame(PVP, first);
         }
         if (pve)
         {
-            ShowDifficulty(first);
+            showDifficulty(first);
         }
         EndDrawing();
     }
     CloseWindow();
 }
 
-void GameUI::InitBoard()
+void GameUI::initBoard()
 {
     BeginDrawing();
     ClearBackground(BACKGROUND);
@@ -137,7 +136,7 @@ void GameUI::InitBoard()
     EndDrawing();
 }
 
-void GameUI::ShowDifficulty(bool first)
+void GameUI::showDifficulty(bool first)
 {
     int i = -1;
     int drop = GuiDropdownBox(Rectangle{
@@ -149,37 +148,37 @@ void GameUI::ShowDifficulty(bool first)
         if (i == 0) {
             EndDrawing();
             CloseWindow();
-            RunGame(RANDOM, first);
+            runGame(RANDOM, first);
         }
         if (i == 1) {
             EndDrawing();
             CloseWindow();
-            RunGame(EXPERT, first);
+            runGame(EXPERT, first);
         }
     }
 }
 
 
-inline void GameUI::PlayerAsOrder()
+inline void GameUI::playerAsOrder()
 {
     checkForClicks();
-    InitBoard();
+    initBoard();
     if (Api.state.player == 2)
     {
         Api.makeEnemyMove(true);
     }
-    InitBoard();
+    initBoard();
 }
 
-inline void GameUI::PlayerAsChaos()
+inline void GameUI::playerAsChaos()
 {
     if (Api.state.player == 1)
     {
         Api.makeEnemyMove(false);
-        InitBoard();
+        initBoard();
     }
     checkForClicks();
-    InitBoard();
+    initBoard();
 }
 
 void GameUI::StartProcedure() const
@@ -191,32 +190,32 @@ void GameUI::StartProcedure() const
 }
 
 
-void GameUI::RunGame(const int& mode, bool order)
+void GameUI::runGame(const int& mode, bool order)
 {
     Api.mode = mode;
     StartProcedure();
-    InitBoard();
+    initBoard();
     while (!WindowShouldClose())
     {
-        InitBoard();
+        initBoard();
         if (mode == PVP)
             checkForClicks();
         else
         {
             if (order)
             {
-                PlayerAsOrder();
+                playerAsOrder();
             }
             else
             {
-                PlayerAsChaos();
+                playerAsChaos();
             }
         }
         if (Api.state.isFinished)
         {
-            EndInfo check = isEnd();
-            InitBoard();
-            InitBoard();
+            const EndInfo check = isEnd();
+            initBoard();
+            initBoard();
             if (check.who == 1) {
                 drawEndLine(check);
             }
@@ -300,7 +299,7 @@ void GameUI::showTurnPopup() const
 {
     int twidth = windowWidth/3;
     int theight = windowHeight/24;
-    const char* text = "grrr";
+    const char* text;
     if (Api.state.player == 1)
         text = "Order's turn";
     else
@@ -308,7 +307,7 @@ void GameUI::showTurnPopup() const
     GuiLoadStyleDefault();
     Font defaultFont = GetFontDefault();
     GuiSetFont(defaultFont);
-    GuiSetStyle(DEFAULT, TEXT_SIZE, 10);
+    GuiSetStyle(DEFAULT, TEXT_SIZE, (GetScreenWidth() > GetScreenHeight() ? GetScreenWidth() : GetScreenHeight())/50);
     GuiButton((Rectangle){(float)(windowWidth-twidth), 0.0f, (float)(twidth), (float)(theight)}, text);
 }
 

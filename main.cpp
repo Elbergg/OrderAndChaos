@@ -7,11 +7,16 @@
 #include "Minimax.h"
 
 
+/* to do:
+ * - add music
+ * - private methods
+ */
+
 int main(void)
 {
     Minimax minimax = {};
     GameApi gameApi = GameApi(minimax);
-    GameUI gameUI = GameUI(500, 500, gameApi);
-    gameUI.Run();
+    GameUI gameUI = GameUI(500, 500, 600, 400, gameApi);
+    gameUI.run();
     return 0;
 }
