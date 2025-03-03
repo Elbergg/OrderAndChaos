@@ -18,6 +18,7 @@
 
 /* to do:
  * - random choice when results from alpha beta are equal
+ * make the heuristic better
  */
 
 
@@ -157,29 +158,25 @@ void GameUI::ShowDifficulty(bool first)
 }
 
 
-void GameUI::PlayerAsOrder()
+inline void GameUI::PlayerAsOrder()
 {
-    if (Api.state.player == 1)
-    {
-        checkForClicks();
-    }
-    else
+    checkForClicks();
+    InitBoard();
+    if (Api.state.player == 2)
     {
         Api.makeEnemyMove(true);
     }
     InitBoard();
 }
 
-void GameUI::PlayerAsChaos()
+inline void GameUI::PlayerAsChaos()
 {
     if (Api.state.player == 1)
     {
         Api.makeEnemyMove(false);
+        InitBoard();
     }
-    else
-    {
-        checkForClicks();
-    }
+    checkForClicks();
     InitBoard();
 }
 
@@ -200,13 +197,18 @@ void GameUI::RunGame(const int& mode, bool order)
     while (!WindowShouldClose())
     {
         InitBoard();
-        if (order)
-        {
-            PlayerAsOrder();
-        }
+        if (mode == PVP)
+            checkForClicks();
         else
         {
-            PlayerAsChaos();
+            if (order)
+            {
+                PlayerAsOrder();
+            }
+            else
+            {
+                PlayerAsChaos();
+            }
         }
         if (Api.state.isFinished)
         {
@@ -275,20 +277,18 @@ void GameUI::drawEndLine(const EndInfo &check) const
 
 void GameUI::checkForClicks() const
 {
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON || IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))){
-        int x = GetMouseX()/(float)(windowWidth/6);
-        int y = GetMouseY()/(float)(windowHeight/6);
-        if (Api.state.board[y][x]!=0)
-            return;
-        if (x >= 0 && y >= 0 && x <=5 && y<=5) {
-            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-            {
-                Api.makeMove(y,x,X_mark);
-            }
-            else if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON))
-            {
-                Api.makeMove(y,x,O_mark);
-            }
+    int x = GetMouseX()/(float)(windowWidth/6);
+    int y = GetMouseY()/(float)(windowHeight/6);
+    if (Api.state.board[y][x]!=0)
+        return;
+    if (x >= 0 && y >= 0 && x <=5 && y<=5) {
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            Api.makeMove(y,x,X_mark);
+        }
+        else if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON))
+        {
+            Api.makeMove(y,x,O_mark);
         }
     }
 }
