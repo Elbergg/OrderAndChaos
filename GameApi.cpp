@@ -14,18 +14,18 @@ void GameApi::randomMove()
 {
    state = state.randomMove();
 }
-void GameApi::expertMove()
+void GameApi::expertMove(bool order)
 {
-   state = state.expertMove(bot);
+   state = state.expertMove(bot, order);
 }
 
 
-void GameApi::makeEnemyMove()
+void GameApi::makeEnemyMove(bool order)
 {
    if (mode == RANDOM)
       randomMove();
    else if (mode == EXPERT){
-      expertMove();
+      expertMove(order);
       }
 }
 

@@ -38,7 +38,7 @@ std::vector<State> Minimax::getSuccesors(State& state)
     return succesors;
 }
 
-Cords Minimax::move(State& state)
+Cords Minimax::move(State& state, bool order)
 {
     std::vector<Cords> cords= getSuccCords(state);
     std::vector<State> succs = getSuccesors(state);
@@ -47,14 +47,31 @@ Cords Minimax::move(State& state)
     {
         results.push_back(this->AlphaBeta(succ, 3, -100000, 100000));
     }
-    int smallest = 100000000;
-    int idx = 0;
-    for (int i = 0; i < results.size(); i++)
+    int idx;
+    if (order)
     {
-        if (results[i] < smallest)
+        int smallest = 100000000;
+        idx = 0;
+        for (int i = 0; i < results.size(); i++)
         {
-            smallest = results[i];
-            idx = i;
+            if (results[i] < smallest)
+            {
+                smallest = results[i];
+                idx = i;
+            }
+        }
+    }
+    else
+    {
+        int biggest = -100000000;
+        idx = 0;
+        for (int i = 0; i < results.size(); i++)
+        {
+            if (results[i] > biggest)
+            {
+                biggest = results[i];
+                idx = i;
+            }
         }
     }
     return cords[idx];
@@ -65,9 +82,10 @@ int Minimax::AlphaBeta(State state, int depth, int alpha, int beta)
     if (state.isFinished || depth == 0)
         return state.heuristic();
     std::vector<State> succesors = getSuccesors(state);
-    int  val = -100000;
+    int  val;
     if (state.player == 1)
     {
+        val = -100000;
         for (auto succesor : succesors)
         {
             val = std::max(val, AlphaBeta(succesor, depth-1, alpha, beta));

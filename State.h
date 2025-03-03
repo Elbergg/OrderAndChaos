@@ -31,7 +31,7 @@ public:
     bool isFinished;
     State makeMove(int y,  int x, int val);
     State randomMove();
-    State expertMove(Bot& bot);
+    State expertMove(Bot& bot, bool order);
     int heuristic();
     State() {
         std::memset(board, 0, sizeof(board));

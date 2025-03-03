@@ -28,9 +28,9 @@ State State::randomMove()
     return makeMove(y,x,distrib(gen));
 }
 
-State State::expertMove(Bot& bot)
+State State::expertMove(Bot& bot, bool order)
 {
-    Cords cords = bot.move(*this);
+    Cords cords = bot.move(*this, order);
     return makeMove(cords.y, cords.x, cords.val);
 }
 

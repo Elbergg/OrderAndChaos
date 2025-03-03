@@ -12,7 +12,7 @@ class Minimax : public Bot{
 public:
     std::vector<Cords>getSuccCords(State& state);
     std::vector<State>getSuccesors(State& state);
-    Cords move(State& state);
+    Cords move(State& state, bool order);
     int AlphaBeta(State state, int depth, int alpha, int beta);
 };
 

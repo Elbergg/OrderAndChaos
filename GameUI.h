@@ -20,13 +20,14 @@ public:
         windowHeight = height;
     }
     void Run();
-    void RunGame(int mode);
+    void RunGame(int mode, bool order);
     void showMenu(int mode, int who);
     void drawGrids();
     void drawTiles(char board[6][6]);
     void drawX(int y, int x);
     void drawO(int y, int x);
     void checkForClicks();
+    void InitBoard();
     void drawEndLine(EndInfo check);
     void drawRectangles();
     void showTurnPopup();

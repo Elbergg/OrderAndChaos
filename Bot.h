@@ -14,7 +14,7 @@ class Bot
 {
 public:
     virtual ~Bot() = default;
-    virtual Cords move(State& state) = 0;
+    virtual Cords move(State& state, bool order) = 0;
 };
 
 #endif //BOT_H

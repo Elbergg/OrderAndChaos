@@ -30,9 +30,9 @@ public:
         return *this;
     }
     void makeMove(int y, int x, int val);
-    void makeEnemyMove();
+    void makeEnemyMove(bool order);
     void randomMove();
-    void expertMove();
+    void expertMove(bool order);
     EndInfo isEnd();
 };
 

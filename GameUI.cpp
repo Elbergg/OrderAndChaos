@@ -70,7 +70,6 @@ void GameUI::showMenu(int mode, int who)
         GuiSetStyle(DEFAULT, TEXT_SIZE, 14);
         GuiLabel((Rectangle){(float)(GetScreenWidth()*4/7), (float)(GetScreenHeight()*3/10), (float)(GetScreenWidth()/7), (float)(GetScreenHeight()/12)}, "Im playing as: ");
         GuiSetStyle(DEFAULT, TEXT_SIZE, 10);
-        // GuiComboBox((Rectangle){(float)(GetScreenWidth()*5/7), (float)(GetScreenHeight()*3/10), (float)(GetScreenWidth()/7), (float)(GetScreenHeight()/12)}, "Order;Chaos", &side);
         if (first) {
             side2 = GuiButton((Rectangle){(float)(GetScreenWidth()*5/7), (float)(GetScreenHeight()*3/10), (float)(GetScreenWidth()/7), (float)(GetScreenHeight()/12)}, "Order");
             if (side2) {
@@ -91,7 +90,7 @@ void GameUI::showMenu(int mode, int who)
         {
             EndDrawing();
             CloseWindow();
-            RunGame(PVP);
+            RunGame(PVP, first);
         }
         if (pve)
         {
@@ -105,12 +104,12 @@ void GameUI::showMenu(int mode, int who)
                 if (i == 0) {
                     EndDrawing();
                     CloseWindow();
-                    RunGame(RANDOM);
+                    RunGame(RANDOM, first);
                 }
                 if (i == 1) {
                     EndDrawing();
                     CloseWindow();
-                    RunGame(EXPERT);
+                    RunGame(EXPERT, first);
                 }
             }
         }
@@ -119,35 +118,45 @@ void GameUI::showMenu(int mode, int who)
     CloseWindow();
 }
 
+void GameUI::InitBoard()
+{
+    BeginDrawing();
+    ClearBackground(BACKGROUND);
+    windowWidth = GetScreenWidth();
+    windowHeight = GetScreenHeight();
+    drawGrids();
+    drawTiles(Api.state.board);
+    showTurnPopup();
+    EndDrawing();
+}
 
 
-void GameUI::RunGame(int mode)
+void GameUI::RunGame(int mode, bool order)
 {
     Api.mode = mode;
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(windowWidth, windowHeight, "OrderAndChaos");
     ClearBackground(BACKGROUND);
     SetTargetFPS(60);
+    InitBoard();
     while (!WindowShouldClose())
     {
-        BeginDrawing();
-        ClearBackground(BACKGROUND);
-        windowWidth = GetScreenWidth();
-        windowHeight = GetScreenHeight();
-        drawGrids();
-        checkForClicks();
-        if (mode != PVP && Api.state.player == 2)
-            Api.makeEnemyMove();
-        drawTiles(Api.state.board);
-        showTurnPopup();
+        InitBoard();
+        if (order) {
+            checkForClicks();
+            if (mode != PVP && Api.state.player == 2)
+                Api.makeEnemyMove(order);
+        }
+        else {
+            if (mode != PVP && Api.state.player == 1)
+                Api.makeEnemyMove(order);
+            checkForClicks();
+        }
         if (Api.state.isFinished)
         {
             EndInfo check = isEnd();
-            EndDrawing();
-            BeginDrawing();
-            drawTiles(Api.state.board);
-            showTurnPopup();
-            EndDrawing();
+            InitBoard();
+            InitBoard();
             if (check.who == 1) {
                 drawEndLine(check);
             }
@@ -157,7 +166,6 @@ void GameUI::RunGame(int mode)
             showMenu(NEXT, check.who);
             return;
         }
-        EndDrawing();
     }
     CloseWindow();
 }
