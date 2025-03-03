@@ -18,7 +18,9 @@
 
 /* to do:
  * - random choice when results from alpha beta are equal
- * make the heuristic better
+ * - make the heuristic better
+ * - bug with finish out of bounds
+ * - scaled text size
  */
 
 
@@ -282,11 +284,11 @@ void GameUI::checkForClicks() const
     if (Api.state.board[y][x]!=0)
         return;
     if (x >= 0 && y >= 0 && x <=5 && y<=5) {
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
         {
             Api.makeMove(y,x,X_mark);
         }
-        else if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON))
+        else if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON))
         {
             Api.makeMove(y,x,O_mark);
         }
