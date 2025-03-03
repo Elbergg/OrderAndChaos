@@ -115,24 +115,7 @@ void GameUI::showMenu(int mode, int who)
         }
         if (pve)
         {
-            int i = -1;
-            int drop = GuiDropdownBox(Rectangle{
-                      (float) GetScreenWidth() * 4 / 7, (float) GetScreenHeight() * 2 / 5,
-                      (float) GetScreenWidth() * 2 / 7, (float) GetScreenHeight() / 7
-                  }, "Random;Expert", &i, true);
-            if (drop)
-            {
-                if (i == 0) {
-                    EndDrawing();
-                    CloseWindow();
-                    RunGame(RANDOM, first);
-                }
-                if (i == 1) {
-                    EndDrawing();
-                    CloseWindow();
-                    RunGame(EXPERT, first);
-                }
-            }
+            ShowDifficulty(first);
         }
         EndDrawing();
     }
@@ -150,6 +133,30 @@ void GameUI::InitBoard()
     showTurnPopup();
     EndDrawing();
 }
+
+void GameUI::ShowDifficulty(bool first)
+{
+    int i = -1;
+    int drop = GuiDropdownBox(Rectangle{
+              (float) GetScreenWidth() * 4 / 7, (float) GetScreenHeight() * 2 / 5,
+              (float) GetScreenWidth() * 2 / 7, (float) GetScreenHeight() / 7
+          }, "Random;Expert", &i, true);
+    if (drop)
+    {
+        if (i == 0) {
+            EndDrawing();
+            CloseWindow();
+            RunGame(RANDOM, first);
+        }
+        if (i == 1) {
+            EndDrawing();
+            CloseWindow();
+            RunGame(EXPERT, first);
+        }
+    }
+}
+
+
 void GameUI::PlayerAsOrder()
 {
     if (Api.state.player == 1)
@@ -193,19 +200,13 @@ void GameUI::RunGame(const int& mode, bool order)
     while (!WindowShouldClose())
     {
         InitBoard();
-        if (order) {
-            checkForClicks();
-            InitBoard();
-            if (mode != PVP && Api.state.player == 2)
-                Api.makeEnemyMove(order);
+        if (order)
+        {
+            PlayerAsOrder();
         }
-        else {
-            if (mode != PVP && Api.state.player == 1)
-            {
-                Api.makeEnemyMove(order);
-                InitBoard();
-            }
-            checkForClicks();
+        else
+        {
+            PlayerAsChaos();
         }
         if (Api.state.isFinished)
         {

@@ -37,6 +37,7 @@ public:
     void ReloadMenu();
     void DisplayWhoWonInfo(const int& who);
     void HandleSideButton(bool& first);
+    void ShowDifficulty(bool first);
     EndInfo isEnd() const;
 };
 
