@@ -20,18 +20,24 @@ public:
         windowHeight = height;
     }
     void Run();
-    void RunGame(int mode, bool order);
+    void RunGame(const int& mode, bool order);
     void showMenu(int mode, int who);
-    void drawGrids();
+    void drawGrids() const;
     void drawTiles(char board[6][6]);
-    void drawX(int y, int x);
-    void drawO(int y, int x);
-    void checkForClicks();
+    void drawX(int y, int x) const;
+    void drawO(int y, int x) const;
+    void checkForClicks() const;
     void InitBoard();
-    void drawEndLine(EndInfo check);
+    void PlayerAsOrder();
+    void PlayerAsChaos();
+    void drawEndLine(const EndInfo &check) const;
     void drawRectangles();
-    void showTurnPopup();
-    EndInfo isEnd();
+    void showTurnPopup() const;
+    void StartProcedure() const;
+    void ReloadMenu();
+    void DisplayWhoWonInfo(const int& who);
+    void HandleSideButton(bool& first);
+    EndInfo isEnd() const;
 };
 
 

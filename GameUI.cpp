@@ -16,6 +16,10 @@
 #define NEXT 2
 
 
+/* to do:
+ * - random choice when results from alpha beta are equal
+ */
+
 
 void GameUI::Run()
 {
@@ -23,21 +27,52 @@ void GameUI::Run()
 }
 
 
+void GameUI::ReloadMenu()
+{
+    this->Api = GameApi(this->Api.bot);
+    GuiLoadStyleDefault();
+    Font defaultFont = GetFontDefault();
+    GuiSetFont(defaultFont);
+}
+
+void GameUI::DisplayWhoWonInfo(int const& who)
+{
+    if (who==1)
+        GuiLabel(Rectangle{(float)GetScreenWidth()/6, (float)GetScreenHeight()/10,(float)GetScreenWidth()*2/3, (float)GetScreenHeight()/6}, "Order won!");
+    else if (who==2)
+        GuiLabel(Rectangle{(float)GetScreenWidth()/6, (float)GetScreenHeight()/10,(float)GetScreenWidth()*2/3, (float)GetScreenHeight()/6}, "Chaos won!");
+
+}
+
+void GameUI::HandleSideButton(bool &first)
+{
+    int side;
+    if (first) {
+        side = GuiButton((Rectangle){(float)(GetScreenWidth()*5/7), (float)(GetScreenHeight()*3/10), (float)(GetScreenWidth()/7), (float)(GetScreenHeight()/12)}, "Order");
+        if (side) {
+            first = false;
+        }
+    }
+    else{
+        side = GuiButton((Rectangle){(float)(GetScreenWidth()*5/7), (float)(GetScreenHeight()*3/10), (float)(GetScreenWidth()/7), (float)(GetScreenHeight()/12)}, "Chaos");
+        if (side)
+            first = true;
+    }
+}
+
+
+
 void GameUI::showMenu(int mode, int who)
 {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(600,400, "OrderAndChaosMenu");
     SetTargetFPS(60);
-    if (mode==NEXT) {
-        this->Api = GameApi(this->Api.bot);
-        GuiLoadStyleDefault();
-        Font defaultFont = GetFontDefault();
-        GuiSetFont(defaultFont);
+    if (mode==NEXT)
+    {
+        ReloadMenu();
     }
     int pvp = 0;
     int pve = 0;
-    int side1 = 0;
-    int side2 = 0;
     bool first = true;
     while (!WindowShouldClose())
     {
@@ -46,10 +81,7 @@ void GameUI::showMenu(int mode, int who)
         GuiSetStyle(DEFAULT, TEXT_SIZE, 25);
         if (mode==NEXT)
         {
-            if (who==1)
-                GuiLabel(Rectangle{(float)GetScreenWidth()/6, (float)GetScreenHeight()/10,(float)GetScreenWidth()*2/3, (float)GetScreenHeight()/6}, "Order won!");
-            else if (who==2)
-                GuiLabel(Rectangle{(float)GetScreenWidth()/6, (float)GetScreenHeight()/10,(float)GetScreenWidth()*2/3, (float)GetScreenHeight()/6}, "Chaos won!");
+            DisplayWhoWonInfo(who);
         }
         else
         {
@@ -70,18 +102,7 @@ void GameUI::showMenu(int mode, int who)
         GuiSetStyle(DEFAULT, TEXT_SIZE, 14);
         GuiLabel((Rectangle){(float)(GetScreenWidth()*4/7), (float)(GetScreenHeight()*3/10), (float)(GetScreenWidth()/7), (float)(GetScreenHeight()/12)}, "Im playing as: ");
         GuiSetStyle(DEFAULT, TEXT_SIZE, 10);
-        if (first) {
-            side2 = GuiButton((Rectangle){(float)(GetScreenWidth()*5/7), (float)(GetScreenHeight()*3/10), (float)(GetScreenWidth()/7), (float)(GetScreenHeight()/12)}, "Order");
-            if (side2) {
-                first = false;
-            }
-        }
-        else{
-            side1 = GuiButton((Rectangle){(float)(GetScreenWidth()*5/7), (float)(GetScreenHeight()*3/10), (float)(GetScreenWidth()/7), (float)(GetScreenHeight()/12)}, "Chaos");
-            if (side1)
-                first = true;
-        }
-
+        HandleSideButton(first);
         if (!pve && !pvp) {
             EndDrawing();
             continue;
@@ -129,15 +150,45 @@ void GameUI::InitBoard()
     showTurnPopup();
     EndDrawing();
 }
-
-
-void GameUI::RunGame(int mode, bool order)
+void GameUI::PlayerAsOrder()
 {
-    Api.mode = mode;
+    if (Api.state.player == 1)
+    {
+        checkForClicks();
+    }
+    else
+    {
+        Api.makeEnemyMove(true);
+    }
+    InitBoard();
+}
+
+void GameUI::PlayerAsChaos()
+{
+    if (Api.state.player == 1)
+    {
+        Api.makeEnemyMove(false);
+    }
+    else
+    {
+        checkForClicks();
+    }
+    InitBoard();
+}
+
+void GameUI::StartProcedure() const
+{
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(windowWidth, windowHeight, "OrderAndChaos");
     ClearBackground(BACKGROUND);
     SetTargetFPS(60);
+}
+
+
+void GameUI::RunGame(const int& mode, bool order)
+{
+    Api.mode = mode;
+    StartProcedure();
     InitBoard();
     while (!WindowShouldClose())
     {
@@ -154,7 +205,7 @@ void GameUI::RunGame(int mode, bool order)
                 Api.makeEnemyMove(order);
                 InitBoard();
             }
-                checkForClicks();
+            checkForClicks();
         }
         if (Api.state.isFinished)
         {
@@ -201,12 +252,12 @@ void GameUI::drawRectangles()
 }
 
 
-EndInfo GameUI::isEnd()
+EndInfo GameUI::isEnd() const
 {
     return Api.isEnd();
 }
 
-void GameUI::drawEndLine(EndInfo check)
+void GameUI::drawEndLine(const EndInfo &check) const
 {
     for (int i = 0; i< 30; i++) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -221,7 +272,7 @@ void GameUI::drawEndLine(EndInfo check)
     }
 }
 
-void GameUI::checkForClicks()
+void GameUI::checkForClicks() const
 {
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON || IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))){
         int x = GetMouseX()/(float)(windowWidth/6);
@@ -242,7 +293,7 @@ void GameUI::checkForClicks()
 }
 
 
-void GameUI::showTurnPopup()
+void GameUI::showTurnPopup() const
 {
     int twidth = windowWidth/3;
     int theight = windowHeight/24;
@@ -259,7 +310,7 @@ void GameUI::showTurnPopup()
 }
 
 
-void GameUI::drawGrids() {
+void GameUI::drawGrids() const {
     float thickness = windowWidth/100;
     for (int i = 1; i < 6; i++) {
         DrawLineEx((Vector2){static_cast<float>(windowWidth) / 6 * i, 0},
@@ -286,7 +337,8 @@ void GameUI::drawTiles(char board[6][6]) {
         }
     }
 }
-void GameUI::drawX(int y, int x) {
+void GameUI::drawX(int y, int x) const
+{
     float padding_x = windowWidth/OFFSET;
     float padding_y = windowHeight/OFFSET;
     DrawLineEx(
@@ -299,7 +351,8 @@ void GameUI::drawX(int y, int x) {
     10, X);
 }
 
-void GameUI::drawO(int y, int x) {
+void GameUI::drawO(int y, int x) const
+{
     float radius;
     if (windowHeight > windowWidth)
         radius = windowWidth / 15;
